@@ -6,6 +6,7 @@ import time
 import warnings
 from utils.scheduler import Scheduler
 from utils.accounts import Loan, Savings
+from utils.event import Event
 from utils.time_utils import (
     calculate_day,
     generate_days,
@@ -17,16 +18,20 @@ main_s = Savings('AmeriCU', amount=9000, rate=.01)
 house_l = Loan(name='House', principle=176130, rate=.03625, length=30)
 
 start = time.time()
-# accounts = {
-#     main_s.name:        main_s,
-# }
-# debts = {
-#     house_l.name:       house_l,
-# }
 accounts = {
     main_s.name:        main_s,
     house_l.name:       house_l,
 }
+
+mortgage = Event(
+    credit_dict={
+        'account': lambda: main_s.make_withdrawal(house_l.minimum+536.76)
+    },
+    debit_dict={
+        'loan': lambda: house_l.make_payment(house_l.minimum)
+    },
+    stop_cond=lambda: house_l.principle <= 0.00
+)
 
 event_manager.add_event(
     'K_payday',
@@ -35,17 +40,23 @@ event_manager.add_event(
     'every other week'
 )
 event_manager.add_event(
-    f'{house_l.name}_charge',
-    lambda: main_s.make_withdrawal(house_l.minimum+536.76),
+    f'{house_l.name}',
+    mortgage,
     datetime.date(2020, 2, 1),
     'every month'
 )
-event_manager.add_event(
-    f'{house_l.name}_payment',
-    lambda: house_l.make_payment(house_l.minimum),
-    datetime.date(2020, 2, 1),
-    'every month'
-)
+# event_manager.add_event(
+#     f'{house_l.name}_charge',
+#     lambda: main_s.make_withdrawal(house_l.minimum+536.76),
+#     datetime.date(2020, 2, 1),
+#     'every month'
+# )
+# event_manager.add_event(
+#     f'{house_l.name}_payment',
+#     lambda: house_l.make_payment(house_l.minimum),
+#     datetime.date(2020, 2, 1),
+#     'every month'
+# )
 # pay = {
 #     main_s.name:        2350.00,
 # }
