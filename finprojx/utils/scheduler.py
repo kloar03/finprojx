@@ -33,9 +33,6 @@ class Scheduler:
     def __getitem__(self, key):
         return [self.func_map[name] for name in self.events[key]]
 
-    # def __iter__(self):
-    #     for key in self.events
-
     def __contains__(self, item):
         return item in self.events
 
