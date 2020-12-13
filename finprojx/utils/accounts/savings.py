@@ -5,6 +5,7 @@ import datetime
 import time
 import warnings
 from .account import Account
+from ..misc import float_as_money
 
 class Savings(Account):
     """ class to represent and manage a savings account """
@@ -16,7 +17,7 @@ class Savings(Account):
     
     def __repr__(self):
         """ returns the string representation of the class """
-        return f"Savings(name={self.name}, amount=${self.amount:.2f}, rate={self.rate} per {self.rate_units[:-1]})"
+        return f"Savings(name={self.name}, amount={float_as_money(self.amount)}, rate={self.rate} per {self.rate_units[:-1]})"
 
 
     def make_deposit(self, amount=0.00) -> None:

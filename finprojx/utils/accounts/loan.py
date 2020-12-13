@@ -5,6 +5,7 @@ import datetime
 import time
 import warnings
 from .account import Account
+from ..misc import float_as_money
 
 class Loan(Account):
     """ class to represent and manage a loan """
@@ -26,7 +27,7 @@ class Loan(Account):
     
     def __repr__(self):
         """ returns the string representation of the class """
-        return f"Loan(name={self.name}, origination=${self.origination:.2f}, principal=${self.principle:.2f},length={self.length} {self.rate_units})"
+        return f"Loan(name={self.name}, origination={float_as_money(self.origination)}, principal={float_as_money(self.principle)}, length={self.length} {self.rate_units})"
 
     def get_origination(self):
         """ get the origination value of the loan """
