@@ -71,7 +71,9 @@ class Scheduler:
     @staticmethod
     def build_schedule(date, freq, units, until=None):
         """ build the event schedule """
-        if freq == 'every':
+        if freq == 'once':
+            freq_val = 1000*365 # an enormous value to ensure we don't increment
+        elif freq == 'every':
             freq_val = 1
         elif freq == 'second':
             freq_val = 2
@@ -82,7 +84,9 @@ class Scheduler:
         else:
             raise ValueError('invalid freq passed')
 
-        if units == 'days':
+        if freq == 'once':
+            freq_units = rrule.DAILY # value doesn't matter here
+        elif units == 'days':
             freq_units = rrule.DAILY
         elif units == 'weeks':
             freq_units = rrule.WEEKLY
@@ -124,7 +128,9 @@ class Scheduler:
     @classmethod
     def clean_frequency(self, string):
         """ format the frequency of the rule """
-        if 'every other' in string:
+        if 'once' in string:
+            return 'once'
+        elif 'every other' in string:
             return 'second'
         elif 'every second' in string:
             return 'second'
