@@ -15,7 +15,7 @@ from utils.time_utils import (
 )
 # database operations
 from mongoengine import connect
-from db.utils.nosql_account import NoSQL_Account
+from db.nosql_account import NoSQL_Account
 
 event_manager = Scheduler(2085)
 main_s = Savings('AmeriCU', amount=9000, rate=.01)
