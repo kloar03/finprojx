@@ -1,0 +1,14 @@
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }} - FinProjX</title>
+      {% else %}
+      <title>Welcome to FinProjX</title>
+      {% endif %}
+    </head>
+    <body>
+        <div>FinProjX: <a href="/home">Home</a></div>
+        <hr>
+        {% block content %}{% endblock %}
+    </body>
+</html>
