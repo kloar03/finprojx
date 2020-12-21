@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <b>The addition of a new event</b><br/>goes here
+    <br/>
+    <form action="" method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.date.label }}<br>
+            {{ form.date(size=32) }}<br>
+            {% for error in form.date.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.frequency.label }}<br>
+            {{ form.frequency(size=32) }}<br>
+            {% for error in form.frequency.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.submit() }}
+        </p>
+    </form>
+{% endblock %}
