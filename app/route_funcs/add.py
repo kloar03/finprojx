@@ -1,5 +1,5 @@
-def add_event() -> None:
+def add_event_main() -> None:
     ...
 
-def add_account() -> None:
+def add_account_main() -> None:
     ...
