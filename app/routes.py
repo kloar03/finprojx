@@ -9,13 +9,20 @@ from app.forms import (
 from utils.scheduler import Scheduler
 from utils.event import Event
 
+# utility functions
+from .route_funcs import add_event_main, add_account_main
+
 # database operations
 from mongoengine import connect
 from db.nosql_account import NoSQL_Account
 
+# some globals
 mongo_client = connect('finprojx_app', host='localhost', port=27017)
 db = mongo_client['finprojx']
 event_manager = Scheduler(2085)
+
+accounts = {}
+
 @flask_app.route('/')
 @flask_app.route('/home')
 def home():
@@ -37,15 +44,9 @@ def add_account():
     form = AddAccountForm()
     title = 'Add Account'
     if form.submit() and request.method == 'POST':
-        if form.data['account_type'] == 'savings':
-            flash('Savings!')
-            if not form.data['rate']:
-                flash('Enter a rate as a percentile (between 0-100)', category='error')
-        elif form.data['account_type'] == 'loan':
-            flash('Loan!')
-        else:
-            flash('Please select an account type!', category='error')
-    
+        account = add_account_main(form)
+        for name in account:
+            accounts[name] = account[name]    
     return render_template('add_account.html', title=title, form=form)
 
 @flask_app.route('/data', methods=['GET'])
@@ -74,5 +75,15 @@ def view():
     for doc in NoSQL_Account.objects[:10]:
         html_string += \
             f'<p>{doc}</p>'
+    html_string += '</html>'
+    return html_string
+
+@flask_app.route('/accounts', methods=['GET'])
+def account_route():
+    title = 'Account Viewer'
+    html_string = '<html><h1>A temporary account viewer!</h1>'
+    for name in accounts:
+        html_string += \
+            f'<p>{accounts[name]}</p>'
     html_string += '</html>'
     return html_string

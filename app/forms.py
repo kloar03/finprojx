@@ -11,10 +11,11 @@ class AddEventForm(FlaskForm):
 class AddAccountForm(FlaskForm):
     # TODO: conditional validation
     # account_type = SelectField('Account Type',
+    account_name = StringField('Account Name', validators=[DataRequired()])
     account_type = RadioField('Account Type',
                     choices=[('savings','Savings'),('loan','Loan')],
                     validators=[DataRequired()])
-    rate = IntegerField('Rate')
+    rate = DecimalField('Rate')
     amount = DecimalField('Amount')
     principle = DecimalField('Loan Principle')
     length = IntegerField('Loan Length')
