@@ -7,11 +7,12 @@ from app.forms import (
 )
 # simulation operations
 from utils.scheduler import Scheduler
+from utils.accounts import Savings, Loan
 from utils.event import Event
 
 # utility functions
 from .route_funcs import add_event_main, add_account_main
-
+from .tables import SavingsTable, LoansTable
 # database operations
 from mongoengine import connect
 from db.nosql_account import NoSQL_Account
@@ -21,13 +22,26 @@ mongo_client = connect('finprojx_app', host='localhost', port=27017)
 db = mongo_client['finprojx']
 event_manager = Scheduler(2085)
 
-accounts = {}
+
+accounts = {
+    'AmeriCU': Savings('AmeriCU', 10000, .025),
+    'Mortgage_1': Loan('Mortgage_1', 178000, 3.65, 30),
+}
 
 @flask_app.route('/')
 @flask_app.route('/home')
 def home():
     title = 'Home'
-    return render_template('home.html', title=title)
+    savings_accts = [accounts[n] for n in accounts
+                     if isinstance(accounts[n], Savings)]
+    loan_accts = [accounts[n] for n in accounts
+                     if isinstance(accounts[n], Loan)]
+    savings_table = SavingsTable(savings_accts,
+                                 html_attrs={'style':"float: left;"})
+    loan_table = LoansTable(loan_accts,
+                            html_attrs={'style':"float: right;"})
+    return render_template('home.html', title=title,
+                           s_table=savings_table, l_table=loan_table)
 
 @flask_app.route('/add/event', methods=['GET','POST'])
 def add_event():
