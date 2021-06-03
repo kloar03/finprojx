@@ -19,7 +19,8 @@ class AddAccountForm(FlaskForm):
     amount = DecimalField('Amount')
     principle = DecimalField('Loan Principle')
     length = IntegerField('Loan Length')
-    submit = SubmitField('Create Account')
+    more = SubmitField('Continue Creating Accounts')
+    submit = SubmitField('Finish Creating Accounts')
 
 class DropCollectionsForm(FlaskForm):
     submit = SubmitField('Drop Collections')

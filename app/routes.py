@@ -47,6 +47,9 @@ def add_account():
         account = add_account_main(form)
         for name in account:
             accounts[name] = account[name]    
+        if account:
+            red_to = '/' if form.data['submit'] else url_for('add_account')
+            return redirect(red_to)
     return render_template('add_account.html', title=title, form=form)
 
 @flask_app.route('/data', methods=['GET'])
