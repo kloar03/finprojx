@@ -1,11 +1,19 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, RadioField
+from wtforms import StringField, SubmitField, SelectField, RadioField, FieldList, FormField
+from wtforms.fields.core import Field
 from wtforms.fields.html5 import DateField, IntegerField, IntegerRangeField, DecimalField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, NumberRange
+
+class EventSubForm(FlaskForm):
+    account = SelectField('Account', validators=[DataRequired()])
+    amount = DecimalField('Amount', validators=[NumberRange(min=.0), DataRequired()])
 
 class AddEventForm(FlaskForm):
-    date = DateField('Event Date', validators=[DataRequired()], format='%Y-%m-%d')
-    frequency = StringField('Event Frequency', validators=[DataRequired()])
+    name = StringField('Event Name')
+    credit_accounts = FieldList(FormField(EventSubForm), min_entries=1)
+    add_credit = SubmitField('Add Another')
+    debit_accounts = FieldList(FormField(EventSubForm), min_entries=1)
+    add_debit = SubmitField('Add Another')
     submit = SubmitField('Add Event')
 
 class AddAccountForm(FlaskForm):

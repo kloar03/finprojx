@@ -27,6 +27,7 @@ accounts = {
     'AmeriCU': Savings('AmeriCU', 10000, .025),
     'Mortgage_1': Loan('Mortgage_1', 178000, 3.65, 30),
 }
+events = {}
 
 @flask_app.route('/')
 @flask_app.route('/home')
@@ -46,11 +47,22 @@ def home():
 @flask_app.route('/add/event', methods=['GET','POST'])
 def add_event():
     form = AddEventForm()
+    # populate the choices w/ current accounts
+    cur_accounts = list(accounts.keys())
+    for entry in form.credit_accounts.entries:
+        entry.account.choices = cur_accounts
+    for entry in form.debit_accounts.entries:
+        entry.account.choices = cur_accounts
     title = 'Add Event'
-    if form.validate_on_submit(): # POST
-        flash(f"Date:{form.date.data}, Frequency:{form.frequency.data}")
-    elif request.method:
-        flash(form.errors)
+    if request.method == 'POST' and form.add_credit.data: # POST
+        form.credit_accounts.append_entry()
+        form.credit_accounts.entries[-1].account.choices = cur_accounts
+        return render_template('add_event.html', title=title, form=form)
+    elif request.method == 'POST' and form.add_debit.data:
+        form.debit_accounts.append_entry()
+        form.debit_accounts.entries[-1].account.choices = cur_accounts
+        return render_template('add_event.html', title=title, form=form)
+    
     return render_template('add_event.html', title=title, form=form)
 
 @flask_app.route('/add/account', methods=['GET','POST'])

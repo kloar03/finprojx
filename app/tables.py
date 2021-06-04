@@ -12,4 +12,5 @@ class LoansTable(Table):
     classes = ['table-striped', 'table-bordered', 'table-condensed']
     id = Col('ID', show=False)
     name = Col('Account Name')
+    origination = Col('Origination Amount')
     rate = Col('Annual Percent Rate')

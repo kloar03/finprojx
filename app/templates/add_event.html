@@ -2,27 +2,27 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <b>The addition of a new event</b><br/>goes here
-    <br/>
-    {{ wtf.quick_form(form) }}
-    <!-- <form action="" method="POST" novalidate>
+    <h1>
+        Add New Event
+    </h1>
+    <form class="form form-basic" method="POST" role="form" novalidate>
         {{ form.hidden_tag() }}
-        <p>
-            {{ form.date.label }}<br>
-            {{ form.date(size=32) }}<br>
-            {% for error in form.date.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.frequency.label }}<br>
-            {{ form.frequency(size=32) }}<br>
-            {% for error in form.frequency.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.submit() }}
-        </p>
-    </form> -->
+        {{ wtf.form_errors(form, hiddens="only") }}
+    
+        {{ wtf.form_field(form.name) }}
+
+        <div>
+            {{ form.credit_accounts }}
+            {{ form.add_credit }}
+        </div>
+        <br/>
+        <div>
+            {{ form.debit_accounts }}
+            {{ form.add_debit }}
+        </div>
+        
+        <br/>
+        {{ form.submit }}
+
+    </form>
 {% endblock %}

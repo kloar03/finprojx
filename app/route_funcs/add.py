@@ -6,6 +6,9 @@ def out_of_range(number, low, high):
     return (low > number) or (high < number)
 
 def add_event_main() -> None:
+    """
+    the main functionality for adding new events
+    """
     ...
 
 def add_account_main(form) -> dict:
