@@ -32,44 +32,44 @@ accounts = {
 }
 
 contrib_401k = Event(
-    credit_list=[
-        lambda: main_s.make_withdrawal(150)
-    ],
-    debit_list=[
-        lambda: invest_s.make_deposit(150)
-    ]
+    credit_dict={
+        main_s: 150
+    },
+    debit_dict={
+        invest_s: 150
+    }
 )
 
 mortgage = Event(
-    credit_list=[
-        lambda: main_s.make_withdrawal(house_l.minimum+536.76)
-    ],
-    debit_list=[
-        lambda: house_l.make_payment(house_l.minimum)
-    ],
-    stop_cond=lambda: house_l.principle <= 0.00
+    credit_dict={
+        main_s: house_l.minimum+536.76
+    },
+    debit_dict={
+        house_l: house_l.minimum
+    },
+    stop_cond=house_l.is_complete
 )
 
 cost_of_living = Event(
-    credit_list=[
-        lambda: main_s.make_withdrawal(2500/15)
-    ]
+    credit_dict={
+        main_s: 2500/15
+    }
 )
 
 car1_down = Event(
-    credit_list=[
-        lambda: main_s.make_withdrawal(5000)
-    ]
+    credit_dict={
+        main_s: 5000
+    }
 )
 
 car1 = Event(
-    credit_list=[
-        lambda: main_s.make_withdrawal(car1_l.minimum)
-    ],
-    debit_list=[
-        lambda: car1_l.make_payment(car1_l.minimum)
-    ],
-    stop_cond=lambda: car1_l.principle <= 0.00
+    credit_dict={
+        main_s: car1_l.minimum
+    },
+    debit_dict={
+        car1_l: car1_l.minimum
+    },
+    stop_cond=car1_l.is_complete
 )
 
 event_manager.add_event(

@@ -1,4 +1,5 @@
 from flask import render_template, flash, redirect, url_for, request
+from werkzeug.utils import html
 from app import flask_app
 from app.forms import (
     AddEventForm,
@@ -12,7 +13,7 @@ from utils.event import Event
 
 # utility functions
 from .route_funcs import add_event_main, add_account_main
-from .tables import SavingsTable, LoansTable
+from .tables import SavingsTable, LoansTable, EventsTable
 # database operations
 from mongoengine import connect
 from db.nosql_account import NoSQL_Account
@@ -27,7 +28,10 @@ accounts = {
     'AmeriCU': Savings('AmeriCU', 10000, .0025),
     'Mortgage_1': Loan('Mortgage_1', 178000, .03625, 30),
 }
-events = {}
+events = {
+    'Mortage_1_Pay': Event(credit_dict={accounts['AmeriCU']:811.77},
+                           debit_dict={accounts['Mortgage_1']:811.77})
+}
 
 @flask_app.route('/')
 @flask_app.route('/home')
@@ -41,8 +45,22 @@ def home():
                                  html_attrs={'style':"float: left;"})
     loan_table = LoansTable(loan_accts,
                             html_attrs={'style':"float: right;"})
+    event_dicts = []
+    for name, event in events.items():
+        event_dict = {}
+        event_dict['name'] = name
+        ca_names = [acct.name for acct in event.credit_dict]
+        event_dict['credit_accounts'] = '\n'.join(ca_names)
+        event_dict['credit_amounts'] = '\n'.join(map(str, event.credit_dict.values()))
+        da_names = [acct.name for acct in event.debit_dict]
+        event_dict['debit_accounts'] = '\n'.join(da_names)
+        event_dict['debit_amounts'] = '\n'.join(map(str, event.debit_dict.values()))
+        event_dicts.append(event_dict)
+    events_table = EventsTable(event_dicts,
+                               html_attrs={'style':"white-space:pre-wrap; word-wrap:break-word"}) 
     return render_template('home.html', title=title,
-                           s_table=savings_table, l_table=loan_table)
+                           s_table=savings_table, l_table=loan_table,
+                           e_table=events_table)
 
 @flask_app.route('/add/event', methods=['GET','POST'])
 def add_event():

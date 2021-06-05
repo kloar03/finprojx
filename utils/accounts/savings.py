@@ -20,12 +20,12 @@ class Savings(Account):
         return f"Savings(name={self.name}, amount={float_as_money(self.amount)}, rate={self.rate} per {self.rate_units[:-1]})"
 
 
-    def make_deposit(self, amount=0.00) -> None:
+    def debit(self, amount=0.00) -> None:
         """ method to deposit into savings account """
         if amount <= 0.00: raise ValueError(f'must make strictly positive deposit, tried {amount}')
         self.amount += amount
     
-    def make_withdrawal(self, amount=0.00) -> float:
+    def credit(self, amount=0.00) -> float:
         """ method to withdrawal from savings account """
         if amount <= 0.00: 
             raise ValueError(f'must make strictly positive deposit, tried {amount}')

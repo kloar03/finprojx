@@ -35,7 +35,7 @@ class Loan(Account):
     # disallow changes to the origination value
     origination = property(fget=get_origination)
 
-    def make_payment(self, value=None) -> float:
+    def debit(self, value=None) -> float:
         """ method to make payments on the loan, returning any leftover """
         value = value if value else self.minimum
         if value < self.minimum: warnings.warn('Failed to make the minimum payment on {self.name}')
@@ -48,6 +48,8 @@ class Loan(Account):
         self.principle -= amount
         return round(leftover, 2)
     
+    def is_complete(self):
+        return self.principle <= 0.0
 # l = Loan(name='House', principle=176130, rate=.03625, length=30)
 # print(isinstance(l, Account))
 # print(l.principle)
