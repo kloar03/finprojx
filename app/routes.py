@@ -24,8 +24,8 @@ event_manager = Scheduler(2085)
 
 
 accounts = {
-    'AmeriCU': Savings('AmeriCU', 10000, .025),
-    'Mortgage_1': Loan('Mortgage_1', 178000, 3.65, 30),
+    'AmeriCU': Savings('AmeriCU', 10000, .0025),
+    'Mortgage_1': Loan('Mortgage_1', 178000, .03625, 30),
 }
 events = {}
 
@@ -61,8 +61,22 @@ def add_event():
     elif request.method == 'POST' and form.add_debit.data:
         form.debit_accounts.append_entry()
         form.debit_accounts.entries[-1].account.choices = cur_accounts
-        return render_template('add_event.html', title=title, form=form)
-    
+    elif form.submit() and form.more.data: # an actual submission
+        event = add_event_main(form, accounts)
+        for name in event:
+            events[name] = event[name]
+        if event:
+            return redirect(url_for('add_event'))
+    elif form.submit() and form.submit.data: # an actual submission
+        try:
+            event = add_event_main(form, accounts)
+            for name in event:
+                events[name] = event[name]
+        except:
+            ...
+        finally:
+           return redirect('/')
+        
     return render_template('add_event.html', title=title, form=form)
 
 @flask_app.route('/add/account', methods=['GET','POST'])

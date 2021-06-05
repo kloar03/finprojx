@@ -14,7 +14,8 @@ class AddEventForm(FlaskForm):
     add_credit = SubmitField('Add Another')
     debit_accounts = FieldList(FormField(EventSubForm), min_entries=1)
     add_debit = SubmitField('Add Another')
-    submit = SubmitField('Add Event')
+    more = SubmitField('Continue Creating Events')
+    submit = SubmitField('Finish Creating Events')
 
 class AddAccountForm(FlaskForm):
     # TODO: conditional validation
