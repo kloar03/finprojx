@@ -4,24 +4,22 @@ sys.path.append(os.getcwd())
 from .accounts.account import Account
 
 class Event:
-    def __init__(self, credit_dict={}, debit_dict={}, **kwargs):
+    def __init__(self, credit_list=[], debit_list=[], **kwargs):
         """ create a financial event """
         stop_cond = kwargs.get('stop_cond', lambda: False)
-        if (not credit_dict) and (not debit_dict):
-            raise ValueError('must pass a non-empty credit_dict or debit_dict')
-        self.credit_dict = credit_dict
-        self.debit_dict = debit_dict
+        if (not credit_list) and (not debit_list):
+            raise ValueError('must pass a non-empty credit_list or debit_list')
+        self.credit_list = credit_list
+        self.debit_list = debit_list
         self.stop_cond = stop_cond
         self.stop = False
 
     def __call__(self):
         """ perform the event actions if the stop condition has not been met """
         if self.stop: return
-        for account in self.credit_dict:
-            action = self.credit_dict[account]
+        for action in self.credit_list:
             action()
-        for account in self.debit_dict:
-            action = self.debit_dict[account]
+        for action in self.debit_list:
             action()
         if self.stop_cond():
             self.stop = True

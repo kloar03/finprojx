@@ -1,6 +1,8 @@
 import datetime
 import warnings
 
+# TODO: transfer_to function for clearner transactions
+
 class Account:
     """ class to represent and manage an account """
     def __init__(self, name: str, rate: float, rate_units: str='years'):

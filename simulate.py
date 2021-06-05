@@ -32,43 +32,43 @@ accounts = {
 }
 
 contrib_401k = Event(
-    credit_dict={
-        'savings': lambda: main_s.make_withdrawal(150)
-    },
-    debit_dict={
-        '401k': lambda: invest_s.make_deposit(150)
-    }
+    credit_list=[
+        lambda: main_s.make_withdrawal(150)
+    ],
+    debit_list=[
+        lambda: invest_s.make_deposit(150)
+    ]
 )
 
 mortgage = Event(
-    credit_dict={
-        'account': lambda: main_s.make_withdrawal(house_l.minimum+536.76)
-    },
-    debit_dict={
-        'loan': lambda: house_l.make_payment(house_l.minimum)
-    },
+    credit_list=[
+        lambda: main_s.make_withdrawal(house_l.minimum+536.76)
+    ],
+    debit_list=[
+        lambda: house_l.make_payment(house_l.minimum)
+    ],
     stop_cond=lambda: house_l.principle <= 0.00
 )
 
 cost_of_living = Event(
-    credit_dict={
-        'account': lambda: main_s.make_withdrawal(2500/15)
-    }
+    credit_list=[
+        lambda: main_s.make_withdrawal(2500/15)
+    ]
 )
 
 car1_down = Event(
-    credit_dict={
-        'account': lambda: main_s.make_withdrawal(5000)
-    }
+    credit_list=[
+        lambda: main_s.make_withdrawal(5000)
+    ]
 )
 
 car1 = Event(
-    credit_dict={
-        'account': lambda: main_s.make_withdrawal(car1_l.minimum)
-    },
-    debit_dict={
-        'loan': lambda: car1_l.make_payment(car1_l.minimum)
-    },
+    credit_list=[
+        lambda: main_s.make_withdrawal(car1_l.minimum)
+    ],
+    debit_list=[
+        lambda: car1_l.make_payment(car1_l.minimum)
+    ],
     stop_cond=lambda: car1_l.principle <= 0.00
 )
 
