@@ -1,15 +1,61 @@
 from flask import flash
+from numpy.lib.arraysetops import isin
+from utils.event import Event
 from utils.accounts import Loan, Savings
+from pprint import PrettyPrinter
+
+pp = PrettyPrinter(indent=2)
 
 def out_of_range(number, low, high):
     """ check if a number outside a given range """
     return (low > number) or (high < number)
 
-def add_event_main() -> None:
+def add_event_main(form, accounts) -> dict:
     """
     the main functionality for adding new events
     """
-    ...
+    pp.pprint(form.data)
+    
+    # transactions should be equal quantities
+    if form.credit_accounts and form.debit_accounts:
+        cred_sum = sum([acct['amount'].data for acct in form.credit_accounts])
+        deb_sum = sum([acct['amount'].data for acct in form.debit_accounts])
+        if cred_sum != deb_sum:
+            flash('The total amount transferred should equal funds provided, '
+                 f'but you transferred {deb_sum} while supplying {cred_sum}',
+                 category='error')
+            return {}
+    # define how and what we credit
+    cred_actions = []
+    for acct in form.credit_accounts:
+        account = accounts[acct['account'].data]
+        amount = acct['amount'].data
+        cred_actions.append(lambda: account.make_withdrawal(amount))
+    # TODO: pay ahead for loans
+    # define how and what we debit, plus check for loan minimums
+    to_flash = []
+    deb_actions = []
+    for acct in form.debit_accounts:
+        account = accounts[acct['account'].data]
+        amount = acct['amount'].data
+        is_loan = isinstance(account, Loan)
+        acct_func = Loan.make_payment if is_loan else Savings.make_deposit
+        if is_loan and amount < account.minimum: # payment too small
+            to_flash.append(f'Attempted payment of {amount} to loan '
+                            f'{account.name} but minimum is {account.minimum}.')
+        deb_actions.append(lambda: account.acct_func(amount))
+    if to_flash: # found an error
+        flash('\n'.join(to_flash), category='error')
+        return {}
+
+    # TODO: ajax validation
+    # perform manual validation
+    if not form.name.data:
+        flash('Must pass a name!', category='error')
+        return {}
+
+    e = Event(credit_list=cred_actions, debit_list=deb_actions)
+    return {form.name.data: e}
 
 def add_account_main(form) -> dict:
     """
