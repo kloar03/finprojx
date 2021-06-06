@@ -1,5 +1,18 @@
 {% extends 'base.html' %}
 
 {% block app_content %}
-    The data viewer!
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <h1> data viewer! </h1>
+
+    <body>
+        <div id="chart" class="chart"></div>
+    </body>
+
+    <script>
+        graph_data = {{ graph_data | safe }};
+        layout = {{ layout | safe }};
+        Plotly.newPlot("chart", graph_data, layout);
+    </script>
+
 {% endblock %}
