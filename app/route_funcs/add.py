@@ -14,8 +14,6 @@ def add_event_main(form, accounts) -> dict:
     """
     the main functionality for adding new events
     """
-    pp.pprint(form.data)
-    
     # transactions should be equal quantities
     if form.credit_accounts and form.debit_accounts:
         cred_sum = sum([acct['amount'].data for acct in form.credit_accounts])
