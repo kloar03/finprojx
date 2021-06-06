@@ -4,7 +4,7 @@ sys.path.append(os.getcwd())
 from .accounts.account import Account
 
 class Event:
-    def __init__(self, credit_dict=[], debit_dict=[], **kwargs):
+    def __init__(self, credit_dict={}, debit_dict={}, **kwargs):
         """ create a financial event """
         stop_cond = kwargs.get('stop_cond', lambda: False)
         if (not credit_dict) and (not debit_dict):
@@ -17,9 +17,9 @@ class Event:
     def __call__(self):
         """ perform the event actions if the stop condition has not been met """
         if self.stop: return
-        for account, amount in self.credit_dict:
+        for account, amount in self.credit_dict.items():
             account.credit(amount)
-        for account, amount in self.debit_dict:
+        for account, amount in self.debit_dict.items():
             account.debit(amount)
         if self.stop_cond():
             self.stop = True
