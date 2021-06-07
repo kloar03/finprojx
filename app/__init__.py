@@ -7,4 +7,14 @@ flask_app.config.from_object(Config)
 
 bootstrap = Bootstrap(flask_app)
 
-from app import routes
+# from app import central
+from app.routes import (
+    add,
+    add_account,
+    add_event,
+    data,
+    drop,
+    home,
+    schedule,
+    simulate,
+)
