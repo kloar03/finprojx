@@ -48,7 +48,7 @@ class AddAccountForm(FlaskForm):
     # account_type = SelectField('Account Type',
     account_name = StringField('Account Name', validators=[DataRequired()])
     account_type = RadioField('Account Type',
-                    choices=[('savings','Savings'),('loan','Loan')],
+                    choices=['Savings','Loan'],
                     validators=[DataRequired()])
     rate = DecimalField('Rate')
     amount = DecimalField('Amount')

@@ -12,8 +12,9 @@ class LoansTable(Table):
     classes = ['table-striped', 'table-bordered', 'table-condensed']
     id = Col('ID', show=False)
     name = Col('Account Name')
-    origination = Col('Origination Amount')
+    value = Col('Origination Amount')
     rate = Col('Annual Percent Rate')
+    length = Col('Length of Loan')
 
 class EventsTable(Table):
     no_items = 'No Events Created Yet!'

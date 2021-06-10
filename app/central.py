@@ -1,4 +1,5 @@
 from pprint import PrettyPrinter
+from utils.accounts.account import Account
 from flask import render_template, flash, redirect, url_for, request, render_template_string
 from datetime import date
 from werkzeug.utils import html
@@ -20,12 +21,12 @@ from utils.time_utils import (
 )
 
 # utility functions
-from .route_funcs import add_event_main, add_account_main
+# from .route_funcs import add_event_main, add_account_main
 from .tables import SavingsTable, LoansTable, EventsTable
 # database operations
 from mongoengine import connect
 from db.nosql_account import NoSQL_Account
-
+from db import DB_Account
 
 pp = PrettyPrinter(indent=2)
 
@@ -35,10 +36,18 @@ db = mongo_client['finprojx']
 event_arg_lists = []
 # event_manager = Scheduler(2085)
 
-accounts = {
-    'AmeriCU': Savings('AmeriCU', 10000, .0025),
-    'Mortgage_1': Loan('Mortgage_1', 178000, .03625, 30),
-}
+accounts = [
+    Savings('AmeriCU', 10000, .0025),
+    Loan('Mortgage_1', 178000, .03625, 30),
+]
+for account in accounts:
+    DB_Account(
+        name=account.name,
+        type=account.__name__,
+        value=account.value,
+        rate=account.rate,
+    ).save()
+exit()
 events = {
     'Mortgage_1_Pay': Event(credit_dict={accounts['AmeriCU']:811.77},
                            debit_dict={accounts['Mortgage_1']:811.77}),

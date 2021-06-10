@@ -16,6 +16,10 @@ from utils.time_utils import (
 # database operations
 from mongoengine import connect
 from db.nosql_account import NoSQL_Account
+from db import DB_Account
+
+mongo_client = connect('simulation_save', host='localhost', port=27017)
+db = mongo_client['finprojx']
 
 event_manager = Scheduler(2085)
 main_s = Savings('AmeriCU', amount=9000, rate=.01)
@@ -24,12 +28,24 @@ house_l = Loan(name='House', principle=176130, rate=.03625, length=30)
 car1_l = Loan(name='Car1', principle=10000, rate=.05, length=5)
 
 start = time.time()
-accounts = {
-    main_s.name:        main_s,
-    invest_s.name:      invest_s,
-    house_l.name:       house_l,
-    car1_l.name:        car1_l,
-}
+accounts = [
+    main_s,
+    invest_s,
+    house_l,
+    car1_l,
+]
+for account in accounts:
+    try:
+        value = account.amount
+    except:
+        value = account.origination
+    DB_Account(
+        name=account.name,
+        type=account.__class__.__name__,
+        value=value,
+        rate=account.rate,
+    ).save()
+exit()
 
 contrib_401k = Event(
     credit_dict={
@@ -74,13 +90,13 @@ car1 = Event(
 
 event_manager.add_event(
     'K_payday',
-    lambda: main_s.make_deposit(2350.00),
+    lambda: main_s.debit(2350.00),
     datetime.date(2020, 1, 3),
     'every other week'
 )
 event_manager.add_event(
     'K_work_contrib',
-    lambda: invest_s.make_deposit(215.00),
+    lambda: invest_s.debit(215.00),
     datetime.date(2020, 1, 10),
     'every other week'
 )
@@ -117,9 +133,6 @@ event_manager.add_event(
     'every month'
 )
 
-mongo_client = connect('simulation_save', host='localhost', port=27017)
-db = mongo_client['finprojx']
-
 seq_name = 'regular'
 docs = []
 for year in range(2020, 2080):
@@ -153,4 +166,5 @@ for name in accounts:
     print(accounts[name])
 end = time.time()
 print(end-start)
-db.drop_collection
+# NoSQL_Account.drop_collection()
+db.drop_collection('finprojx')

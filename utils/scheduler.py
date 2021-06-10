@@ -82,7 +82,7 @@ class Scheduler:
         elif freq == 'fourth':
             freq_val = 4
         else:
-            raise ValueError('invalid freq passed')
+            raise ValueError(f'invalid freq passed: {freq}')
 
         if freq == 'once':
             freq_units = rrule.DAILY # value doesn't matter here

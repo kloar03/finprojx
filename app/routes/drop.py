@@ -4,19 +4,36 @@ from flask import (
 )
 from mongoengine import connect
 
-from app import flask_app
+from app import flask_app, Config
 from app.forms import DropCollectionsForm
-from db.nosql_account import NoSQL_Account
-
-mongo_client = connect('finprojx_app', host='localhost', port=27017)
-db = mongo_client['finprojx']
+from db import (
+    DB_Account,
+    DB_Event,
+    DB_Scheduler,
+    DB_Simulate
+)
 
 @flask_app.route('/drop', methods=['GET', 'POST'])
 def drop():
+    Config.MONGO[Config.DB]
     title = 'Drop Form'
     form = DropCollectionsForm()
     if form.validate_on_submit(): # POST
-        NoSQL_Account.drop_collection()
-        db.drop_collection('finprojx_app')
-        flash('Collection Dropped')
+        try:
+            DB_Account.objects().delete()
+        except AttributeError:
+            ...
+        try:
+            DB_Event.objects().delete()
+        except AttributeError:
+            ...
+        try:
+            DB_Scheduler.objects().delete()
+        except AttributeError:
+            ...
+        try:
+            DB_Simulate.objects().delete()
+        except AttributeError:
+            ...
+        flash('Collections Dropped')
     return render_template('drop.html', title=title, form=form)

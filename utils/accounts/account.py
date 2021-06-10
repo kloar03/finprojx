@@ -24,9 +24,10 @@ class Account:
         if interest_units == self.rate_units:
             try:
                 self.principle *= (1 + self.rate)
+                return self.principle
             except AttributeError:
                 self.amount *= (1 + self.rate)
-            return None
+                return self.amount
         # convert interest units to years
         if interest_units == 'years':
             interest_units_coef = 1
@@ -44,8 +45,10 @@ class Account:
         rate = account_units_coef * self.rate / interest_units_coef
         try:
             self.principle *= (1 + rate)
+            return self.principle
         except AttributeError:
             self.amount *= (1 + rate)
+            return self.amount
             
     @staticmethod
     def resolve_units(units):

@@ -6,30 +6,25 @@ from flask import (
     url_for,
 )
 
-from app import flask_app
+from app import flask_app, Config
 from app.forms import AddEventForm
-from utils.accounts import Savings, Loan
-from utils.event import Event
-
-accounts = {
-    'AmeriCU': Savings('AmeriCU', 10000, .0025),
-    'Mortgage_1': Loan('Mortgage_1', 178000, .03625, 30),
-}
-events = {
-    'Mortgage_1_Pay': Event(credit_dict={accounts['AmeriCU']:811.77},
-                           debit_dict={accounts['Mortgage_1']:811.77}),
-    'Paycheck': Event(debit_dict={accounts['AmeriCU']:2600})
-}
+from db import (
+    DB_Account,
+    DB_Event,
+)
+# from utils.accounts import Savings, Loan
+# from utils.event import Event
 
 @flask_app.route('/add/event', methods=['GET','POST'])
 def add_event():
+    Config.MONGO[Config.DB]
     form = AddEventForm()
     # populate the choices w/ current accounts
-    cur_accounts = list(accounts.keys())
+    cur_accounts = DB_Account.objects()
     for entry in form.credit_accounts.entries:
-        entry.account.choices = cur_accounts
+        entry.account.choices = [acct.name for acct in cur_accounts]
     for entry in form.debit_accounts.entries:
-        entry.account.choices = cur_accounts
+        entry.account.choices = [acct.name for acct in cur_accounts]
     title = 'Add Event'
     if request.method == 'POST' and form.add_credit.data: # POST
         form.credit_accounts.append_entry()
@@ -38,64 +33,75 @@ def add_event():
     elif request.method == 'POST' and form.add_debit.data:
         form.debit_accounts.append_entry()
         form.debit_accounts.entries[-1].account.choices = cur_accounts
-    elif form.submit() and form.more.data: # an actual submission
-        event = add_event_main(form, accounts)
-        for name in event:
-            events[name] = event[name]
-        if event:
-            return redirect(url_for('add_event'))
-    elif form.submit() and form.submit.data: # an actual submission
-        try:
-            event = add_event_main(form, accounts)
-            for name in event:
-                events[name] = event[name]
-        except:
-            ...
-        finally:
-           return redirect('/')
+    elif request.method == 'POST' and form.submit(): # an actual submission
+        url = url_for('add_event') if form.more.data else '/'
+        if add_event_main(form):
+            return redirect(url)
+    # elif form.submit() and form.submit.data: # an actual submission
+    #     try:
+    #         event = add_event_main(form)
+    #     except:
+    #         ...
+    #     finally:
+    #        return redirect('/')
         
     return render_template('add_event.html', title=title, form=form)
 
-def add_event_main(form, accounts) -> dict:
+def add_event_main(form) -> bool:
     """
     the main functionality for adding new events
     """
+    # parse accounts: unused accounts group results in {'amount':None, ...}
+    credit_accounts = [acct.data for acct in form.credit_accounts
+                       if acct['amount'].data]
+    debit_accounts = [acct.data for acct in form.debit_accounts
+                      if acct['amount'].data]
     # transactions should be equal quantities
-    if form.credit_accounts and form.debit_accounts:
-        cred_sum = sum([acct['amount'].data for acct in form.credit_accounts])
-        deb_sum = sum([acct['amount'].data for acct in form.debit_accounts])
+    if credit_accounts and debit_accounts:
+        cred_sum = sum([acct['amount'] for acct in credit_accounts])
+        deb_sum = sum([acct['amount'] for acct in debit_accounts])
         if cred_sum != deb_sum:
             flash('The total amount transferred should equal funds provided, '
                  f'but you transferred {deb_sum} while supplying {cred_sum}',
                  category='error')
-            return {}
-    # define what we credit
-    cred_actions = {}
-    for acct in form.credit_accounts:
-        account = accounts[acct['account'].data]
-        amount = acct['amount'].data
-        cred_actions[account] = amount
-    # TODO: pay ahead for loans
-    # define how and what we debit, plus check for loan minimums
-    to_flash = []
-    deb_actions = {}
-    for acct in form.debit_accounts:
-        account = accounts[acct['account'].data]
-        amount = acct['amount'].data
-        is_loan = isinstance(account, Loan)
-        if is_loan and amount < account.minimum: # payment too small
-            to_flash.append(f'Attempted payment of {amount} to loan '
-                            f'{account.name} but minimum is {account.minimum}.')
-        deb_actions[account] = amount
-    if to_flash: # found an error
-        flash('\n'.join(to_flash), category='error')
-        return {}
+            return False
+    # get our credit account objects
+    acct_names = [a['account'] for a in credit_accounts]
+    c_amounts = [a['amount'] for a in credit_accounts]
+    c_accounts = DB_Account.objects(name__in=acct_names)
+    # TODO: pay ahead (extra payments) for loans
+    # TODO: ensure minimum payment
+    acct_names = [a['account'] for a in debit_accounts]
+    d_amounts = [a['amount'] for a in debit_accounts]
+    d_accounts = DB_Account.objects(name__in=acct_names)
+    # # define how and what we debit, plus check for loan minimums
+    # to_flash = []
+    # debit_accounts = []
+    # debit_amounts = []
+    # for acct in form.debit_accounts.data:
+    #     acc_name = acct['name']
+    #     account = DB_Account.objects(name=acc_name)[0] # only one return
+    #     amount = acct['amount']
+    #     is_loan = account.type == 'Loan'
+    #     if is_loan and amount < account.minimum: # payment too small
+    #         to_flash.append(f'Attempted payment of {amount} to loan '
+    #                         f'{account.name} but minimum is {account.minimum}.')
+    #     deb_actions[account] = amount
+    # if to_flash: # found an error
+    #     flash('\n'.join(to_flash), category='error')
+    #     return {}
 
     # TODO: ajax validation
     # perform manual validation
     if not form.name.data:
         flash('Must pass a name!', category='error')
-        return {}
+        return False
 
-    e = Event(credit_dict=cred_actions, debit_dict=deb_actions)
-    return {form.name.data: e}
+    DB_Event(
+        name=form.name.data,
+        credit_accounts=c_accounts,
+        credit_amounts=c_amounts,
+        debit_accounts=d_accounts,
+        debit_amounts=d_amounts,
+    ).save()
+    return True

@@ -6,6 +6,7 @@ from .accounts.account import Account
 class Event:
     def __init__(self, credit_dict={}, debit_dict={}, **kwargs):
         """ create a financial event """
+        self.name = kwargs.get('name', '')
         stop_cond = kwargs.get('stop_cond', lambda: False)
         if (not credit_dict) and (not debit_dict):
             raise ValueError('must pass a non-empty credit_dict or debit_dict')
