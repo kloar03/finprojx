@@ -1,6 +1,7 @@
 from collections import defaultdict
 import datetime
 from dateutil import rrule
+from utils.time_utils import number_of_days_in_year
 try:
     from .accounts.account import Account
 except ImportError:
@@ -68,6 +69,18 @@ class Scheduler:
         # now we have only events with our key and valid dates
         for d in valid_dates:
             self.events[d].remove(key)
+    
+    def generate_days(self, year):
+        """ yield all of the days with events in the current year """
+        today = datetime.date.today()
+        first_day = today if today.year == year else datetime.date(year, 1, 1)
+        last_day = datetime.date(year, 12, 31)
+        days = sorted([day for day in self.events.keys() if day.year == year])
+        days.insert(0, first_day)
+        days.insert(-1, last_day)
+        for idx in range(1, len(days)): # yield the fence, not the posts
+            yield days[idx-1], days[idx]
+
     @staticmethod
     def build_schedule(date, freq, units, until=None):
         """ build the event schedule """

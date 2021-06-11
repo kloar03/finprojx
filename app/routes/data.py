@@ -1,4 +1,5 @@
 from flask import render_template
+from numpy import argsort, array
 
 from app import flask_app
 from db import (
@@ -13,12 +14,16 @@ def data():
     graph_data = []
     for account in DB_Account.objects():
         acc_docs = DB_Simulate.objects(account=account)
+        dates = array([doc.date for doc in acc_docs])
+        amounts = array([doc.amount for doc in acc_docs])
+        sort_idxs = argsort(dates)
+        dates = [f"{d}" for d in dates[sort_idxs]]
         trace = {
             'type': "scatter",
             'mode': "lines",
             'name': account.name,
-            'x': [f'{doc.date}' for doc in acc_docs],
-            'y': [doc.amount for doc in acc_docs],
+            'x': dates,
+            'y': amounts[sort_idxs].tolist(),
         }
         graph_data.append(trace)
     layout = {'title': 'Simulation X'}

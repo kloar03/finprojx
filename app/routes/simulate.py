@@ -39,16 +39,18 @@ def simulate():
         docs = []
         for year in range(cur_year, fin_year):
             num_days = number_of_days_in_year(year)
-            for day in generate_days(year):
-                for event in event_manager[day]:
+            for last_day, cur_day in event_manager.generate_days(year):
+                day_delta = (cur_day - last_day).days
+                for event in event_manager[cur_day]:
                     event()
                 for account in accounts.values():
                     amount = account.apply_interest(interest_units='days',
-                                                    number_of_days=num_days)
+                                                    days_in_year=num_days,
+                                                    number_of_days=day_delta)
                     doc = DB_Simulate(
                         name=seq_name,
                         account=DB_Account.objects(name=account.name)[0],
-                        date=day,
+                        date=cur_day,
                         amount=amount
                     )
                     docs.append(doc)

@@ -15,6 +15,7 @@ class Loan(Account):
         super().__init__(name, rate, rate_units)
         self.principle = principle
         self.length = length
+        self.interest = 0.0
 
         # get monthly rate for amortization
         rate = self.rate if self.rate_units == 'months' else self.rate/12
@@ -39,6 +40,15 @@ class Loan(Account):
         """ method to make payments on the loan, returning any leftover """
         value = value if value else self.minimum
         if value < self.minimum: warnings.warn('Failed to make the minimum payment on {self.name}')
+        # pay any accrued interest first
+        if self.interest <= value:
+            value -= self.interest
+            self.interest = 0.0
+        else: # add any unpaid interest to the principle
+            self.interest -= value
+            self.principle += self.interest
+            self.interest = value = 0.0
+        # apply the remainder to principal
         if self.principle < value:
             amount = self.principle
             leftover = value-self.principle

@@ -12,8 +12,6 @@ from db import (
     DB_Account,
     DB_Event,
 )
-# from utils.accounts import Savings, Loan
-# from utils.event import Event
 
 @flask_app.route('/add/event', methods=['GET','POST'])
 def add_event():
