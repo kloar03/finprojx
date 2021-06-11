@@ -1,11 +1,6 @@
 from collections import defaultdict
 import datetime
 from dateutil import rrule
-from utils.time_utils import number_of_days_in_year
-try:
-    from .accounts.account import Account
-except ImportError:
-    from accounts.account import Account
 
 ISO_map = {
     'monday':       1,
