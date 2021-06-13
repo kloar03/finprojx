@@ -18,11 +18,9 @@ def add_event():
     Config.MONGO[Config.DB]
     form = AddEventForm()
     # populate the choices w/ current accounts
+    set_account_choices(form.credit_accounts)
+    set_account_choices(form.debit_accounts)
     cur_accounts = DB_Account.objects()
-    for entry in form.credit_accounts.entries:
-        entry.account.choices = [acct.name for acct in cur_accounts]
-    for entry in form.debit_accounts.entries:
-        entry.account.choices = [acct.name for acct in cur_accounts]
     title = 'Add Event'
     if request.method == 'POST' and form.add_credit.data: # POST
         form.credit_accounts.append_entry()
@@ -44,6 +42,12 @@ def add_event():
     #        return redirect('/')
         
     return render_template('add_event.html', title=title, form=form)
+
+def set_account_choices(accounts) -> None:
+    """ sets list of choices from DB accounts """
+    cur_accounts = DB_Account.objects()
+    for entry in accounts.entries:
+        entry.account.choices = [acct.name for acct in cur_accounts]
 
 def add_event_main(form) -> bool:
     """

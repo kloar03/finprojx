@@ -1,41 +1,38 @@
-// Get the modal
-var sModal = document.getElementById("savingsModal");
-// Get the button that opens the modal
-var sBtn = document.getElementById("sBtn");
-// Get the <span> element that closes the modal
-var sSpan = document.getElementById("savingClose");
+function modalLogic(name) {
+    // Get the modal
+    var modal = document.getElementById(name+"Modal");
+    // Get the button that opens the modal
+    var btn = document.getElementById(name+"Btn");
+    // Get the <span> element that closes the modal
+    var span = document.getElementById(name+"Close");
 
-// When the user clicks the button, open the modal 
-sBtn.onclick = function() {
-    sModal.style.display = "block";
-}
-// When the user clicks on <span> (x), close the modal
-sSpan.onclick = function() {
-    sModal.style.display = "none";
+    // When the user clicks the button, open the modal 
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    return modal;
 }
 
-// Get the modal
-var lModal = document.getElementById("loanModal");
-// Get the button that opens the modal
-var lBtn = document.getElementById("lBtn");
-// Get the <span> element that closes the modal
-var lSpan = document.getElementById("loanClose");
-
-// When the user clicks the button, open the modal 
-lBtn.onclick = function() {
-    lModal.style.display = "block";
-}
-// When the user clicks on <span> (x), close the modal
-lSpan.onclick = function() {
-    lModal.style.display = "none";
+// Build modal display logic for every name
+var names = ['savings','loan','event'];
+var modals = [];
+for(idx=0; idx<names.length; idx++){
+    modals.push( modalLogic(names[idx]) );
 }
 
 // When the user clicks anywhere outside of the modals, close them
 window.onclick = function(event) {
-    if (event.target == sModal) {
-        sModal.style.display = "none";
-    }
-    if (event.target == lModal) {
-        lModal.style.display = "none";
+    for(idx=0; idx<modals.length; idx++){
+        if (event.target == modals[idx]) {
+            modals[idx].style.display = "none";
+        }
     }
 }
+
+
+
+

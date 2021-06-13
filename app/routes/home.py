@@ -7,6 +7,10 @@ from flask import (
 )
 
 from .add_account import add_account_main
+from .add_event import (
+    add_event_main,
+    set_account_choices,
+)
 from app import flask_app, Config
 from app.forms import (
     AddAccountForm,
@@ -29,6 +33,9 @@ def home():
     Config.MONGO[Config.DB]
     account_form = AddAccountForm()
     event_form = AddEventForm()
+    set_account_choices(event_form.credit_accounts)
+    set_account_choices(event_form.debit_accounts)
+    
     savings_accts = DB_Account.objects(type='Savings')
     loan_accts = DB_Account.objects(type='Loan')
     savings_table = SavingsTable(savings_accts,
@@ -52,6 +59,9 @@ def home():
                                html_attrs={'style':"white-space:pre-wrap; word-wrap:break-word;"}) 
     if account_form.submit() and request.method == 'POST':
         if add_account_main(account_form):
+            redirect(url_for('home'))
+    if event_form.submit() and request.method == 'POST':
+        if add_event_main(event_form):
             redirect(url_for('home'))
     return render_template('home.html', title=title,
                            s_table=savings_table, l_table=loan_table,
