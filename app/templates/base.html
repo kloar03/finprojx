@@ -1,5 +1,9 @@
 {% extends 'bootstrap/base.html' %}
 
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
 {% block title %}
   {% if title %}{{ title }} - FinProjX{% else %}Welcome to FinProjX{% endif %}
 {% endblock %}

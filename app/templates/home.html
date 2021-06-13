@@ -1,29 +1,66 @@
 {% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+{{ super() }}
+<link href={{ url_for('static', filename='home.css') }} rel="stylesheet">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script defer type="text/javascript" src={{ url_for('static', filename='home.js') }}></script>
+{% endblock %}
 
 {% block app_content %}
-    <h1>
-        Welcome to FinProjX!
-    </h1>
-    <br/>
-    FinProjX is a financial simulation tool which allows you compare
-    long-term financial strategies side-by-side through interative visualizations!
+<h1>
+    Welcome to FinProjX!
+</h1>
+<br/>
+FinProjX is a financial simulation tool which allows you compare
+long-term financial strategies side-by-side through interative visualizations!
 
-    <hr/>
-    <h2>
-        Accounts
-    </h2>
-    <body>
+<hr/>
+<h2>
+    Accounts
+</h2>
+<div class="row">
+    <div class="column">
+        <h3>Savings</h3>
+        <br>
         {{ s_table }}
+    </div>
+    <div class="column">
+        <h3>Loans</h3>
+        <br>
         {{ l_table }}
-    </body>
+    </div>
+</div>
+<div class="row">
+    <div class="column">
+        <button id="sBtn">Add Savings Account</button>
+    </div>
+    <div class="column">
+        <button id="lBtn">Add Loan</button>
+    </div>
+</div>
 
-    <br style="clear:both">
-    <hr/>
-    <h2>
-        Events
-    </h2>
-    <body>
-        {{ e_table }}
-    </body>
+<br style="clear:both">
+<hr/>
+<h2>
+    Events
+</h2>
+{{ e_table }}
 
+<div id="savingsModal" class="modal">
+    <div class="modal-content">
+        <span id="savingClose" class="close">&times;</span>
+        <br>
+        {{ wtf.quick_form(account_form) }}
+    </div>
+</div>
+
+<div id="loanModal" class="modal">
+    <div class="modal-content">
+        <span id="loanClose" class="close">&times;</span>
+        <br>
+        {{ wtf.quick_form(account_form) }}
+    </div>
+</div>
 {% endblock %}

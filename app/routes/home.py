@@ -1,8 +1,17 @@
 from datetime import date
-from db.DB_Event import DB_Event
-from flask import render_template
+from flask import (
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 
+from .add_account import add_account_main
 from app import flask_app, Config
+from app.forms import (
+    AddAccountForm,
+    AddEventForm
+)
 from app.tables import (
     EventsTable,
     LoansTable,
@@ -13,17 +22,19 @@ from db import (
     DB_Event,
 )
 
-@flask_app.route('/')
-@flask_app.route('/home')
+@flask_app.route('/', methods=['GET', 'POST'])
+@flask_app.route('/home', methods=['GET','POST'])
 def home():
     title = 'Home'
     Config.MONGO[Config.DB]
+    account_form = AddAccountForm()
+    event_form = AddEventForm()
     savings_accts = DB_Account.objects(type='Savings')
     loan_accts = DB_Account.objects(type='Loan')
     savings_table = SavingsTable(savings_accts,
-                                 html_attrs={'style':"float: left;"})
+                                 html_attrs={'id':"savingsTable"})
     loan_table = LoansTable(loan_accts,
-                            html_attrs={'style':"float: right;"})
+                            html_attrs={'id':"loanTable"})
     event_dicts = []
     for event in DB_Event.objects():
         event_dict = {}
@@ -38,7 +49,11 @@ def home():
         event_dict['debit_amounts'] = '\n'.join(d_amts)
         event_dicts.append(event_dict)
     events_table = EventsTable(event_dicts,
-                               html_attrs={'style':"white-space:pre-wrap; word-wrap:break-word"}) 
+                               html_attrs={'style':"white-space:pre-wrap; word-wrap:break-word;"}) 
+    if account_form.submit() and request.method == 'POST':
+        if add_account_main(account_form):
+            redirect(url_for('home'))
     return render_template('home.html', title=title,
                            s_table=savings_table, l_table=loan_table,
-                           e_table=events_table)
+                           e_table=events_table, account_form=account_form,
+                           event_form=event_form)
