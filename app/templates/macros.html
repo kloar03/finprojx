@@ -1,0 +1,42 @@
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% macro event_form(form, id="eventForm") -%}
+<form id={{ id }} class="form form-basic" method="POST" role="form" novalidate>
+    {{ form.hidden_tag() }}
+    {{ wtf.form_errors(form, hiddens="only") }}
+
+    {{ wtf.form_field(form.name) }}
+
+    <div>
+        {{ form.credit_accounts }}
+        {{ form.add_credit }}
+    </div>
+
+    <br/>
+
+    <div>
+        {{ form.debit_accounts }}
+        {{ form.add_debit }}
+    </div>
+
+    <br/>
+
+    {{ form.more }} {{ form.submit }}
+</form>
+{%- endmacro %}
+
+{% macro account_form(form, id="accountForm") -%}
+<form id={{ id }} class="form form-basic" method="POST" role="form" novalidate>
+    {{ form.hidden_tag() }}
+    {{ wtf.form_errors(form, hiddens="only") }}
+
+    {{ wtf.form_field(form.account_name) }}
+    {{ wtf.form_field(form.account_type) }}
+    {{ wtf.form_field(form.rate) }}
+    {{ wtf.form_field(form.amount) }}
+    {{ wtf.form_field(form.principle) }}
+    {{ wtf.form_field(form.length) }}
+    {{ form.more }} {{ form.submit }}
+    
+</form>
+{%- endmacro %}

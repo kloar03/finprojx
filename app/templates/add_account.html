@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
+{% from 'macros.html' import account_form %}
 
 {% block app_content %}
     <h2>Fill out the attributes for the desired account!</h2>
     <br>
-    {{ wtf.quick_form(form, novalidate=True) }}
+    {{ account_form(form) }}
 {% endblock %}

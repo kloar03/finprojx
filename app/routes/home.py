@@ -35,7 +35,7 @@ def home():
     event_form = AddEventForm()
     set_account_choices(event_form.credit_accounts)
     set_account_choices(event_form.debit_accounts)
-    
+
     savings_accts = DB_Account.objects(type='Savings')
     loan_accts = DB_Account.objects(type='Loan')
     savings_table = SavingsTable(savings_accts,

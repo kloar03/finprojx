@@ -1,28 +1,10 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
+{% from 'macros.html' import event_form %}
 
 {% block app_content %}
     <h1>
         Add New Event
     </h1>
-    <form class="form form-basic" method="POST" role="form" novalidate>
-        {{ form.hidden_tag() }}
-        {{ wtf.form_errors(form, hiddens="only") }}
-    
-        {{ wtf.form_field(form.name) }}
-
-        <div>
-            {{ form.credit_accounts }}
-            {{ form.add_credit }}
-        </div>
-        <br/>
-        <div>
-            {{ form.debit_accounts }}
-            {{ form.add_debit }}
-        </div>
-        
-        <br/>
-        {{ form.more }} {{ form.submit }}
-
-    </form>
+    {{ event_form(form) }}
 {% endblock %}

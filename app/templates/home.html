@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
+{% from 'macros.html' import account_form as build_account_form %}
+{% from 'macros.html' import event_form as build_event_form %}
 
 {% block head %}
 {{ super() }}
@@ -55,7 +57,7 @@ long-term financial strategies side-by-side through interative visualizations!
     <div class="modal-content">
         <span id="savingsClose" class="close">&times;</span>
         <br>
-        {{ wtf.quick_form(account_form) }}
+        {{ build_account_form(account_form, "savingsForm") }}
     </div>
 </div>
 
@@ -63,7 +65,7 @@ long-term financial strategies side-by-side through interative visualizations!
     <div class="modal-content">
         <span id="loanClose" class="close">&times;</span>
         <br>
-        {{ wtf.quick_form(account_form) }}
+        {{ build_account_form(account_form, "loanForm") }}
     </div>
 </div>
 
@@ -71,26 +73,7 @@ long-term financial strategies side-by-side through interative visualizations!
     <div class="modal-content">
         <span id="eventClose" class="close">&times;</span>
         <br>
-        <form class="form form-basic" method="POST" role="form" novalidate>
-            {{ event_form.hidden_tag() }}
-            {{ wtf.form_errors(event_form, hiddens="only") }}
-        
-            {{ wtf.form_field(event_form.name) }}
-    
-            <div>
-                {{ event_form.credit_accounts }}
-                {{ event_form.add_credit }}
-            </div>
-            <br/>
-            <div>
-                {{ event_form.debit_accounts }}
-                {{ event_form.add_debit }}
-            </div>
-            
-            <br/>
-            {{ event_form.more }} {{ event_form.submit }}
-    
-        </form>
+        {{ build_event_form(event_form, "eventForm") }}
     </div>
 </div>
 {% endblock %}
