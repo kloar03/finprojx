@@ -58,4 +58,7 @@ class AddAccountForm(FlaskForm):
     submit = SubmitField('Finish Creating Accounts')
 
 class DropCollectionsForm(FlaskForm):
-    submit = SubmitField('Drop Collections')
+    accounts = SubmitField('Drop Accounts')
+    events = SubmitField('Drop Events')
+    schedules = SubmitField('Drop Schedules')
+    simulation = SubmitField('Drop Simulation')

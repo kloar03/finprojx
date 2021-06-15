@@ -19,21 +19,28 @@ def drop():
     title = 'Drop Form'
     form = DropCollectionsForm()
     if form.validate_on_submit(): # POST
-        try:
-            DB_Account.objects().delete()
-        except AttributeError:
-            ...
-        try:
-            DB_Event.objects().delete()
-        except AttributeError:
-            ...
-        try:
-            DB_Scheduler.objects().delete()
-        except AttributeError:
-            ...
-        try:
-            DB_Simulate.objects().delete()
-        except AttributeError:
-            ...
-        flash('Collections Dropped')
+        if form.accounts.data:
+            try:
+                DB_Account.objects().delete()
+            except AttributeError:
+                ...
+            flash('Accounts Dropped')
+        elif form.events.data:
+            try:
+                DB_Event.objects().delete()
+            except AttributeError:
+                ...
+            flash('Events Dropped')
+        elif form.schedules.data:
+            try:
+                DB_Scheduler.objects().delete()
+            except AttributeError:
+                ...
+            flash('Schedules Dropped')
+        elif form.simulation.data:
+            try:
+                DB_Simulate.objects().delete()
+            except AttributeError:
+                ...
+            flash('Simulation Dropped')
     return render_template('drop.html', title=title, form=form)
