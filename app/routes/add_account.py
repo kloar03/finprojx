@@ -1,5 +1,6 @@
 from flask import (
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -13,13 +14,18 @@ from db import DB_Account
 @flask_app.route('/add/account', methods=['GET','POST'])
 def add_account():
     Config.MONGO[Config.DB]
+    data = request.get_data()
     form = AddAccountForm()
     title = 'Add Account'
     if form.submit() and request.method == 'POST':
-        if add_account_main(form):
-            red_to = '/' if form.data['submit'] else url_for('add_account')
-            return redirect(red_to)
+        add_account_main(form)
+        data = data.decode()        
+        data = [kv.split('=') for kv in data.split('&')]
+        data = {k:v for (k, v) in data}
+        out = {'finish': data['finish'] == 'finish'}
+        return jsonify(out)
     return render_template('add_account.html', title=title, form=form)
+
 
 def out_of_range(number, low, high):
     """ check if a number outside a given range """
@@ -47,7 +53,7 @@ def add_account_main(form) -> bool:
     if acct_type == 'Savings':
         value = form.data['amount']
         length = None
-        if not value:
+        if value is None:
             flash('Must enter an amount for a savings account', category='error')
             return False
         

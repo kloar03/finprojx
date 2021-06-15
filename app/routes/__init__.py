@@ -6,3 +6,8 @@ from .drop import drop
 from .home import home
 from .schedule import schedule
 from .simulate import simulate
+from .tables import (
+    getSavingsTable,
+    getLoansTable,
+    getEventsTable
+)

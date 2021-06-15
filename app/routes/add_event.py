@@ -1,5 +1,6 @@
 from flask import (
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -16,23 +17,27 @@ from db import (
 @flask_app.route('/add/event', methods=['GET','POST'])
 def add_event():
     Config.MONGO[Config.DB]
+    data = request.get_data()
     form = AddEventForm()
     # populate the choices w/ current accounts
     set_account_choices(form.credit_accounts)
     set_account_choices(form.debit_accounts)
     cur_accounts = DB_Account.objects()
     title = 'Add Event'
-    if request.method == 'POST' and form.add_credit.data: # POST
-        form.credit_accounts.append_entry()
-        form.credit_accounts.entries[-1].account.choices = cur_accounts
-        return render_template('add_event.html', title=title, form=form)
-    elif request.method == 'POST' and form.add_debit.data:
-        form.debit_accounts.append_entry()
-        form.debit_accounts.entries[-1].account.choices = cur_accounts
-    elif request.method == 'POST' and form.submit(): # an actual submission
-        url = url_for('add_event') if form.more.data else '/'
-        if add_event_main(form):
-            return redirect(url)
+    # if request.method == 'POST' and form.add_credit.data: # POST
+    #     form.credit_accounts.append_entry()
+    #     form.credit_accounts.entries[-1].account.choices = cur_accounts
+    #     return render_template('add_event.html', title=title, form=form)
+    # elif request.method == 'POST' and form.add_debit.data:
+    #     form.debit_accounts.append_entry()
+    #     form.debit_accounts.entries[-1].account.choices = cur_accounts
+    if request.method == 'POST' and form.submit(): # an actual submission
+        add_event_main(form)
+        data = data.decode()        
+        data = [kv.split('=') for kv in data.split('&')]
+        data = {k:v for (k, v) in data}
+        out = {'finish': data['finish'] == 'finish'}
+        return jsonify(out)
     # elif form.submit() and form.submit.data: # an actual submission
     #     try:
     #         event = add_event_main(form)
@@ -95,9 +100,9 @@ def add_event_main(form) -> bool:
 
     # TODO: ajax validation
     # perform manual validation
-    if not form.name.data:
-        flash('Must pass a name!', category='error')
-        return False
+    # if not form.name.data:
+    #     flash('Must pass a name!', category='error')
+    #     return False
 
     DB_Event(
         name=form.name.data,

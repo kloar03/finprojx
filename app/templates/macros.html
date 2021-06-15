@@ -21,7 +21,10 @@
 
     <br/>
 
-    {{ form.more }} {{ form.submit }}
+    <input type="hidden" name="finish" value="">
+    <button type="submit" onclick="this.form.finish.value=this.value" value="continue">Continue Creating Events</button>
+    <button type="submit" onclick="this.form.finish.value=this.value" value="finish">Finish Creating Events</button>    
+    <!-- {{ form.more }} {{ form.submit }} -->
 </form>
 {%- endmacro %}
 
@@ -36,7 +39,10 @@
     {{ wtf.form_field(form.amount) }}
     {{ wtf.form_field(form.principle) }}
     {{ wtf.form_field(form.length) }}
-    {{ form.more }} {{ form.submit }}
+    <input type="hidden" name="finish" value="">
+    <button type="submit" onclick="this.form.finish.value=this.value" value="continue">Continue Creating accounts</button>
+    <button type="submit" onclick="this.form.finish.value=this.value" value="finish">Finish Creating accounts</button>    
+    <!-- {{ form.more }} {{ form.submit }} -->
     
 </form>
 {%- endmacro %}
