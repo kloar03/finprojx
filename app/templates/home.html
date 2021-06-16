@@ -26,12 +26,12 @@ long-term financial strategies side-by-side through interative visualizations!
     <div class="column">
         <h3>Savings</h3>
         <br>
-        {{ s_table }}
+        {{ s_table | safe }}
     </div>
     <div class="column">
         <h3>Loans</h3>
         <br>
-        {{ l_table }}
+        {{ l_table | safe }}
     </div>
 </div>
 <div class="row">
@@ -49,7 +49,7 @@ long-term financial strategies side-by-side through interative visualizations!
     Events
 </h2>
 <div class="middle-column">
-    {{ e_table }}
+    {{ e_table | safe }}
     <button id="eventBtn" class="button">Add Event</button>
 </div>
 

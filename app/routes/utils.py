@@ -1,5 +1,6 @@
-from app import Config
+from bs4 import BeautifulSoup
 
+from app import Config
 from app.tables import (
     SavingsTable,
     LoansTable,
@@ -13,12 +14,14 @@ from db import (
 def build_savings_table():
     Config.MONGO[Config.DB]
     accounts = DB_Account.objects(type='Savings')
-    return SavingsTable(accounts, html_attrs={'id':"savingsTable"})
+    table = SavingsTable(accounts, html_attrs={'id':"savingsTable"})
+    return add_edit_delete_to_table(table.__html__())
 
 def build_loans_table():
     Config.MONGO[Config.DB]
     accounts = DB_Account.objects(type='Loan')
-    return LoansTable(accounts, html_attrs={'id':"loanTable"})
+    table = LoansTable(accounts, html_attrs={'id':"loanTable"})
+    return add_edit_delete_to_table(table.__html__())
 
 def build_events_table():
     Config.MONGO[Config.DB]
@@ -35,6 +38,31 @@ def build_events_table():
         d_amts = [str(amt) for amt in event.debit_amounts]
         event_dict['debit_amounts'] = '\n'.join(d_amts)
         event_dicts.append(event_dict)
-    return EventsTable(event_dicts,
-                       html_attrs={'id': 'eventTable',
+    table = EventsTable(event_dicts,
+                        html_attrs={'id': 'eventTable',
                            'style':"white-space:pre-wrap; word-wrap:break-word;"})
+    return add_edit_delete_to_table(table.__html__())
+
+def add_edit_delete_to_table(html_table: str):
+    """ adds edit and delete buttons to every row """
+    soup = BeautifulSoup(html_table, 'html.parser')
+    # print(soup.prettify())
+    body = soup.find('tbody')
+    rows = body.find_all('tr')
+    edit_string = \
+        '<div class="left-icon-container">\n' +\
+        '\t<span class="edit-icon glyphicon glyphicon-pencil"></span>' +\
+        '</div>\n'
+    delete_string = \
+        '<div class="right-icon-container">\n' +\
+        '\t<span class="delete-icon glyphicon glyphicon-trash"></span>' +\
+        '</div>\n'
+
+    for row in rows:
+        first, *_, last = row.find_all('td')
+        # TODO: handle empty last cell (event table)
+        try: first.string = '\n'.join([edit_string, first.string])
+        except TypeError: ...
+        try: last.string = '\n'.join([last.string, delete_string])
+        except TypeError: ...
+    return soup.prettify(formatter=None)
