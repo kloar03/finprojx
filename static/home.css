@@ -1,14 +1,14 @@
 * {
     box-sizing: border-box;
 }
-.column {
+.column, .event-column {
     float: left;
     width: 50%;
     padding-left: 10px;
     padding-right: 10px;
     text-align: center;
 }
-.row:after {
+.row:after, .event-row:after{
     content: "";
     display: table;
     clear: both;
@@ -16,6 +16,9 @@
 .table-striped.table-bordered.table-condensed {
     margin-top: 2px; margin-bottom: 2px;
     margin-left: auto; margin-right: auto;
+}
+.accounts {
+    list-style-type: none;
 }
 .button {
     margin: 5px;
@@ -53,8 +56,32 @@
     text-decoration: none;
     cursor: pointer;
 }
+input#name.form-control {
+    width:25%;
+}
+table[id*='_accounts-']  > tbody > tr > td {
+    padding-bottom: 2px; text-align: right;
+}
 .middle-column {
     margin-left: auto;
     margin-right: auto;
     text-align: center;
+}
+
+.left-icon-container {
+    position: relative;
+    left: -27px; height: 0px;
+    overflow: visible;
+}
+.edit-icon {
+    display: block; width: 15px; height: 15px; border-radius: 5px;
+}
+.right-icon-container {
+    position: relative;
+    right: -27px; height: 0px;
+    overflow: visible;
+}
+.delete-icon {
+    float: right;
+    display: block; width: 15px; height: 15px; border-radius: 5px;
 }

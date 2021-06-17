@@ -30,17 +30,15 @@ def build_events_table():
         event_dict = {}
         event_dict['name'] = event.name
         c_accs = [acc.name for acc in event.credit_accounts]
-        event_dict['credit_accounts'] = '\n'.join(c_accs)
+        event_dict['credit_accounts'] = '<br>'.join(c_accs)
         d_accs = [acc.name for acc in event.debit_accounts]
-        event_dict['debit_accounts'] = '\n'.join(d_accs)
+        event_dict['debit_accounts'] = '<br>'.join(d_accs)
         c_amts = [str(amt) for amt in event.credit_amounts]
-        event_dict['credit_amounts'] = '\n'.join(c_amts)
+        event_dict['credit_amounts'] = '<br>'.join(c_amts)
         d_amts = [str(amt) for amt in event.debit_amounts]
-        event_dict['debit_amounts'] = '\n'.join(d_amts)
+        event_dict['debit_amounts'] = '<br>'.join(d_amts)
         event_dicts.append(event_dict)
-    table = EventsTable(event_dicts,
-                        html_attrs={'id': 'eventTable',
-                           'style':"white-space:pre-wrap; word-wrap:break-word;"})
+    table = EventsTable(event_dicts, html_attrs={'id': 'eventTable'})
     return add_edit_delete_to_table(table.__html__())
 
 def add_edit_delete_to_table(html_table: str):
@@ -63,6 +61,6 @@ def add_edit_delete_to_table(html_table: str):
         # TODO: handle empty last cell (event table)
         try: first.string = '\n'.join([edit_string, first.string])
         except TypeError: ...
-        try: last.string = '\n'.join([last.string, delete_string])
+        try: last.string = '\n'.join([delete_string, last.string])
         except TypeError: ...
     return soup.prettify(formatter=None)

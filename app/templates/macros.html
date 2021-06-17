@@ -1,24 +1,35 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% macro event_form(form, id="eventForm") -%}
+{% macro event_form(form, id="eventForm") %}
 <form id={{ id }} class="form form-basic" method="POST" role="form" novalidate>
     {{ form.hidden_tag() }}
     {{ wtf.form_errors(form, hiddens="only") }}
 
     {{ wtf.form_field(form.name) }}
-
-    <div>
-        {{ form.credit_accounts }}
-        {{ form.add_credit }}
+    <div class="event-row">
+        <div class="event-column">
+            <label for="credit_accounts">Credit Accounts</label>
+            <ul id="credit_accounts" class="accounts">
+                {% for account in form.credit_accounts %}
+                    <li>
+                        {{ account(style="padding-left:5px; padding-right:5px; padding-top:2px; padding-bottom:2px; margin-left:auto; margin-right:auto;") }}
+                    </li>
+                {% endfor %}
+            </ul>
+            {{ form.add_credit(style="margin-left:auto; margin-right:auto;")}}
+        </div>
+        <div class="event-column">
+            <label for="debit_accounts">Debit Accounts</label>
+            <ul id="debit_accounts" class="accounts">
+                {% for account in form.credit_accounts %}
+                    <li>
+                        {{ account(style="padding-left:5px; padding-right:5px; padding-top:2px; padding-bottom:2px; margin-left:auto; margin-right:auto;") }}
+                    </li>
+                {% endfor %}
+            </ul>
+            {{ form.add_debit(style="margin-left:auto; margin-right:auto;")}}
+        </div>
     </div>
-
-    <br/>
-
-    <div>
-        {{ form.debit_accounts }}
-        {{ form.add_debit }}
-    </div>
-
     <br/>
 
     <input type="hidden" name="finish" value="">
@@ -26,9 +37,9 @@
     <button type="submit" onclick="this.form.finish.value=this.value" value="finish">Finish Creating Events</button>    
     <!-- {{ form.more }} {{ form.submit }} -->
 </form>
-{%- endmacro %}
+{% endmacro %}
 
-{% macro account_form(form, id="accountForm") -%}
+{% macro account_form(form, id="accountForm") %}
 <form id={{ id }} class="form form-basic" method="POST" role="form" novalidate>
     {{ form.hidden_tag() }}
     {{ wtf.form_errors(form, hiddens="only") }}
@@ -45,4 +56,4 @@
     <!-- {{ form.more }} {{ form.submit }} -->
     
 </form>
-{%- endmacro %}
+{% endmacro %}
