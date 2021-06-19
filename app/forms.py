@@ -31,6 +31,8 @@ class ScheduleForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class EventSubForm(FlaskForm):
+    class Meta:
+        csrf = False
     account = SelectField('Account', validators=[DataRequired()])
     amount = DecimalField('Amount', validators=[NumberRange(min=.0), DataRequired()])
 

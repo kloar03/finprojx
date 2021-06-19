@@ -1,7 +1,7 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% macro event_form(form, id="eventForm") %}
-<form id={{ id }} class="form form-basic" method="POST" role="form" novalidate>
+<form id={{ id }} class="form form-basic" novalidate>
     {{ form.hidden_tag() }}
     {{ wtf.form_errors(form, hiddens="only") }}
 
@@ -16,31 +16,31 @@
                     </li>
                 {% endfor %}
             </ul>
-            {{ form.add_credit(style="margin-left:auto; margin-right:auto;")}}
+            {{ form.add_credit(type='button', style="margin-left:auto; margin-right:auto;")}}
         </div>
         <div class="event-column">
             <label for="debit_accounts">Debit Accounts</label>
             <ul id="debit_accounts" class="accounts">
-                {% for account in form.credit_accounts %}
+                {% for account in form.debit_accounts %}
                     <li>
                         {{ account(style="padding-left:5px; padding-right:5px; padding-top:2px; padding-bottom:2px; margin-left:auto; margin-right:auto;") }}
                     </li>
                 {% endfor %}
             </ul>
-            {{ form.add_debit(style="margin-left:auto; margin-right:auto;")}}
+            {{ form.add_debit(type='button', style="margin-left:auto; margin-right:auto;")}}
         </div>
     </div>
     <br/>
 
     <input type="hidden" name="finish" value="">
-    <button type="submit" onclick="this.form.finish.value=this.value" value="continue">Continue Creating Events</button>
-    <button type="submit" onclick="this.form.finish.value=this.value" value="finish">Finish Creating Events</button>    
+    <button class='formSubmit' type="submit" onclick="this.form.finish.value=this.value" value="continue">Continue Creating Events</button>
+    <button class='formSubmit' type="submit" onclick="this.form.finish.value=this.value" value="finish">Finish Creating Events</button>    
     <!-- {{ form.more }} {{ form.submit }} -->
 </form>
 {% endmacro %}
 
 {% macro account_form(form, id="accountForm") %}
-<form id={{ id }} class="form form-basic" method="POST" role="form" novalidate>
+<form id={{ id }} class="form form-basic" novalidate>
     {{ form.hidden_tag() }}
     {{ wtf.form_errors(form, hiddens="only") }}
 
@@ -51,8 +51,8 @@
     {{ wtf.form_field(form.principle) }}
     {{ wtf.form_field(form.length) }}
     <input type="hidden" name="finish" value="">
-    <button type="submit" onclick="this.form.finish.value=this.value" value="continue">Continue Creating accounts</button>
-    <button type="submit" onclick="this.form.finish.value=this.value" value="finish">Finish Creating accounts</button>    
+    <button class='formSubmit' type="submit" onclick="this.form.finish.value=this.value" value="continue">Continue Creating accounts</button>
+    <button class='formSubmit' type="submit" onclick="this.form.finish.value=this.value" value="finish">Finish Creating accounts</button>    
     <!-- {{ form.more }} {{ form.submit }} -->
     
 </form>

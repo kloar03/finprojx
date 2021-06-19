@@ -32,8 +32,8 @@ from db import (
     DB_Event,
 )
 
-@flask_app.route('/', methods=['GET', 'POST'])
-@flask_app.route('/home', methods=['GET','POST'])
+@flask_app.route('/', methods=['GET'])
+@flask_app.route('/home', methods=['GET'])
 def home():
     title = 'Home'
     Config.MONGO[Config.DB]
@@ -46,15 +46,6 @@ def home():
     loans_table = build_loans_table()
     events_table = build_events_table()
 
-    if account_form.submit() and request.method == 'POST':
-        print(account_form.data)
-        # if add_account_main(account_form):
-        #     return jsonify(account_form.data)
-            # redirect(url_for('home'))
-    if event_form.submit() and request.method == 'POST':
-        if add_event_main(event_form):
-            return jsonify(event_form.data)
-            # redirect(url_for('home'))
     return render_template('home.html', title=title,
                            s_table=savings_table, l_table=loans_table,
                            e_table=events_table, account_form=account_form,
