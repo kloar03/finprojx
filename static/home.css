@@ -74,7 +74,8 @@ table[id*='_accounts-']  > tbody > tr > td {
     overflow: visible;
 }
 .edit-icon {
-    display: block; width: 15px; height: 15px; border-radius: 5px;
+    display: block;
+    visibility: hidden; width: 15px; height: 15px; border-radius: 5px;
 }
 .right-icon-container {
     position: relative;
@@ -83,5 +84,9 @@ table[id*='_accounts-']  > tbody > tr > td {
 }
 .delete-icon {
     float: right;
-    display: block; width: 15px; height: 15px; border-radius: 5px;
+    visibility: hidden; width: 15px; height: 15px; border-radius: 5px;
+}
+
+tr:hover [class*='-icon'] {
+    visibility: visible;
 }
