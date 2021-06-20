@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
-{% from 'macros.html' import account_form as build_account_form %}
+{% from 'macros.html' import savings_form as build_savings_form %}
+{% from 'macros.html' import loan_form as build_loan_form %}
 {% from 'macros.html' import event_form as build_event_form %}
 
 {% block head %}
-<!-- {{ super() }} -->
+{{ super() }}
 <link href={{ url_for('static', filename='home.css') }} rel="stylesheet">
 <script defer type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script defer type="text/javascript" src={{ url_for('static', filename='home.js') }}></script>
@@ -57,7 +58,7 @@ long-term financial strategies side-by-side through interative visualizations!
     <div class="modal-content">
         <span id="savingsClose" class="close">&times;</span>
         <br>
-        {{ build_account_form(account_form, "savingsForm") }}
+        {{ build_savings_form(savings_form, "savingsForm") }}
     </div>
 </div>
 
@@ -65,7 +66,7 @@ long-term financial strategies side-by-side through interative visualizations!
     <div class="modal-content">
         <span id="loanClose" class="close">&times;</span>
         <br>
-        {{ build_account_form(account_form, "loanForm") }}
+        {{ build_loan_form(loan_form, "loanForm") }}
     </div>
 </div>
 

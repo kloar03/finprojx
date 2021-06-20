@@ -28,11 +28,11 @@ function modalLogic(name) {
     return $modal;
 }
 
-function formLogic($modal, name, addType){
+function formLogic($modal, name){
     var $form = $('#'+name+'Form');
     $form.on('submit', function(e){
         e.preventDefault();
-        $.post('http://localhost:5000/add/'+addType, 
+        $.post('http://localhost:5000/add/'+name, 
             $form.serialize(), 
             function(data, status, xhr){
                 $form[0].reset();
@@ -78,11 +78,14 @@ window.onclick = function(event) {
     }
 }
 
+// add more accounts to EventForm
 $('#add_credit').on('click', function(e){ addEventAccounts('credit'); });
 $('#add_debit').on('click', function(e){ addEventAccounts('debit'); });
+// show edit/delete buttons on hover
+$('tr [class*=-icon').hover( function(e){ $(this).toggleClass('active-icon'); });
 
 //build the logic for POSTing forms and updating tables
 // lines up pairwise with names and modals
-var formTypes = ['account','account','event']
-for(idx=0; idx<names.length; idx++){ formLogic(modals[idx], names[idx], formTypes[idx]); }
+// var formTypes = ['account','account','event']
+for(idx=0; idx<names.length; idx++){ formLogic(modals[idx], names[idx]); } //, formTypes[idx]); }
 

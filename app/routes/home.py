@@ -19,7 +19,8 @@ from .utils import (
 )
 from app import flask_app, Config
 from app.forms import (
-    AddAccountForm,
+    AddSavingsForm,
+    AddLoanForm,
     AddEventForm
 )
 from app.tables import (
@@ -37,7 +38,9 @@ from db import (
 def home():
     title = 'Home'
     Config.MONGO[Config.DB]
-    account_form = AddAccountForm()
+
+    savings_form = AddSavingsForm()
+    loan_form = AddLoanForm()
     event_form = AddEventForm()
     set_account_choices(event_form.credit_accounts)
     set_account_choices(event_form.debit_accounts)
@@ -48,5 +51,5 @@ def home():
 
     return render_template('home.html', title=title,
                            s_table=savings_table, l_table=loans_table,
-                           e_table=events_table, account_form=account_form,
-                           event_form=event_form)
+                           e_table=events_table, savings_form=savings_form,
+                           loan_form=loan_form, event_form=event_form)

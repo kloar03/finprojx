@@ -35,25 +35,36 @@
     <input type="hidden" name="finish" value="">
     <button class='formSubmit' type="submit" onclick="this.form.finish.value=this.value" value="continue">Continue Creating Events</button>
     <button class='formSubmit' type="submit" onclick="this.form.finish.value=this.value" value="finish">Finish Creating Events</button>    
-    <!-- {{ form.more }} {{ form.submit }} -->
 </form>
 {% endmacro %}
 
-{% macro account_form(form, id="accountForm") %}
+{% macro savings_form(form, id="savingsForm") %}
 <form id={{ id }} class="form form-basic" novalidate>
     {{ form.hidden_tag() }}
     {{ wtf.form_errors(form, hiddens="only") }}
 
     {{ wtf.form_field(form.account_name) }}
-    {{ wtf.form_field(form.account_type) }}
     {{ wtf.form_field(form.rate) }}
     {{ wtf.form_field(form.amount) }}
+    <input type="hidden" name="finish" value="">
+    <button class='formSubmit' type="submit" onclick="this.form.finish.value=this.value" value="continue">Continue Creating accounts</button>
+    <button class='formSubmit' type="submit" onclick="this.form.finish.value=this.value" value="finish">Finish Creating accounts</button>    
+    
+</form>
+{% endmacro %}
+
+{% macro loan_form(form, id="loanForm") %}
+<form id={{ id }} class="form form-basic" novalidate>
+    {{ form.hidden_tag() }}
+    {{ wtf.form_errors(form, hiddens="only") }}
+
+    {{ wtf.form_field(form.account_name) }}
+    {{ wtf.form_field(form.rate) }}
     {{ wtf.form_field(form.principle) }}
     {{ wtf.form_field(form.length) }}
     <input type="hidden" name="finish" value="">
     <button class='formSubmit' type="submit" onclick="this.form.finish.value=this.value" value="continue">Continue Creating accounts</button>
     <button class='formSubmit' type="submit" onclick="this.form.finish.value=this.value" value="finish">Finish Creating accounts</button>    
-    <!-- {{ form.more }} {{ form.submit }} -->
     
 </form>
 {% endmacro %}

@@ -45,15 +45,18 @@ class AddEventForm(FlaskForm):
     more = SubmitField('Continue Creating Events')
     submit = SubmitField('Finish Creating Events')
 
-class AddAccountForm(FlaskForm):
+class AddSavingsForm(FlaskForm):
     # TODO: conditional validation
-    # account_type = SelectField('Account Type',
     account_name = StringField('Account Name', validators=[DataRequired()])
-    account_type = RadioField('Account Type',
-                    choices=['Savings','Loan'],
-                    validators=[DataRequired()])
     rate = DecimalField('Rate')
     amount = DecimalField('Amount')
+    more = SubmitField('Continue Creating Accounts')
+    submit = SubmitField('Finish Creating Accounts')
+
+class AddLoanForm(FlaskForm):
+    # TODO: conditional validation
+    account_name = StringField('Account Name', validators=[DataRequired()])
+    rate = DecimalField('Rate')
     principle = DecimalField('Loan Principle')
     length = IntegerField('Loan Length')
     more = SubmitField('Continue Creating Accounts')

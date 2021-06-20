@@ -1,3 +1,4 @@
+/* Variables */
 * {
     box-sizing: border-box;
 }
@@ -76,6 +77,7 @@ table[id*='_accounts-']  > tbody > tr > td {
 .edit-icon {
     display: block;
     visibility: hidden; width: 15px; height: 15px; border-radius: 5px;
+    transition: visibility 1ms ease-out .15s;
 }
 .right-icon-container {
     position: relative;
@@ -85,8 +87,14 @@ table[id*='_accounts-']  > tbody > tr > td {
 .delete-icon {
     float: right;
     visibility: hidden; width: 15px; height: 15px; border-radius: 5px;
+    transition: visibility 1ms ease-out .15s;
 }
 
 tr:hover [class*='-icon'] {
     visibility: visible;
+    transition: visibility 1ms ease-out 0s;
+}
+tr .active-icon {
+    visibility: visible;
+    transition: visibility 1ms ease-out 0s;
 }
