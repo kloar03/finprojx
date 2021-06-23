@@ -77,4 +77,18 @@ long-term financial strategies side-by-side through interative visualizations!
         {{ build_event_form(event_form, "eventForm") }}
     </div>
 </div>
+
+<div id='verifyModal' class="modal">
+    <div class="modal-content">
+        <span id="verifyClose" class="close">&times;</span>
+        <br>
+        <text>Are you sure you want to delete?</text>
+        <br>
+        <form id='verifyForm' class="form form-basic" novalidate>
+            <input name='response' type="hidden" value="n">
+            <button class="button" name="verifyBtn" type="submit" onclick="this.form.response.value='y'">Yes</button>
+            <button class="button" name="verifyBtn" type="submit">No</button>
+        </form>
+    </div>
+</div>
 {% endblock %}

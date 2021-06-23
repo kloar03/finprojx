@@ -1,11 +1,11 @@
 from flask import (
-    flash,
     jsonify,
-    redirect,
     render_template,
+    Response,
     request,
-    url_for,
 )
+from mongoengine.errors import ValidationError
+from urllib.parse import parse_qs
 
 from app import flask_app, Config
 from app.forms import (
@@ -17,28 +17,26 @@ from db import DB_Account
 @flask_app.route('/add/savings', methods=['POST'])
 def add_savings():
     Config.MONGO[Config.DB]
-    data = request.get_data()
+    data = request.get_data(as_text=True)
     form = AddSavingsForm()
     if form.submit():
-        add_account_main(form, 'Savings')
-        data = data.decode()        
-        data = [kv.split('=') for kv in data.split('&')]
-        data = {k:v for (k, v) in data}
-        out = {'finish': data['finish'] == 'finish'}
+        success = add_account_main(form, 'Savings')
+        data = parse_qs( data )
+        out = {'finish': (data['finish'] == 'finish') or (not success)}
         return jsonify(out)
+    return Response({}, status=406, mimetype='application/json')
 
 @flask_app.route('/add/loan', methods=['POST'])
 def add_loan():
     Config.MONGO[Config.DB]
-    data = request.get_data()
+    data = request.get_data(as_text=True)
     form = AddLoanForm()
     if form.submit():
-        add_account_main(form, 'Loan')
-        data = data.decode()        
-        data = [kv.split('=') for kv in data.split('&')]
-        data = {k:v for (k, v) in data}
-        out = {'finish': data['finish'] == 'finish'}
+        success = add_account_main(form, 'Loan')
+        data = parse_qs(data)
+        out = {'finish': (data['finish'] == 'finish') or (not success)}
         return jsonify(out)
+    return Response({}, status=406, mimetype='application/json')
 
 @flask_app.route('/add/account', methods=['GET','POST'])
 def add_account():
@@ -76,16 +74,15 @@ def add_account_main(form, acct_type=None) -> bool:
         try:
             acct_type = form.data['account_type'] 
             if acct_type not in ['Savings', 'Loan']:
-                flash('Please select an account type!', category='error')
+                return False
         except KeyError:
             print('expected "account_type" key but it was not present...')
     # make sure we have a valid name and rate in either case
     name = form.data['account_name']
     if not name:
-        flash('Enter an account name', category='error')
+        return False
     rate = form.data['rate']
     if not rate or out_of_range(rate, 0, 100):
-        flash('Enter a rate as a decimal (between 0-100)', category='error')
         return False
 
     # savings logic
@@ -93,7 +90,6 @@ def add_account_main(form, acct_type=None) -> bool:
         value = form.data['amount']
         length = None
         if value is None:
-            flash('Must enter an amount for a savings account', category='error')
             return False
         
     # loan logic
@@ -101,14 +97,16 @@ def add_account_main(form, acct_type=None) -> bool:
         value = form.data['principle']
         length = form.data['length']
         if (not value) or (not length):
-            flash('Must enter principle and length for loan account')
             return False
     # collect the account info and return
-    DB_Account(
-        name=name,
-        type=acct_type,
-        value=value,
-        rate=rate,
-        length=length, 
-    ).save()
+    try:
+        DB_Account(
+            name=name,
+            type=acct_type,
+            value=value,
+            rate=rate,
+            length=length, 
+        ).save()
+    except ValidationError:
+        return False
     return True

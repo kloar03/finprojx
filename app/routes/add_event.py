@@ -1,11 +1,9 @@
 from flask import (
-    flash,
     jsonify,
-    redirect,
     render_template,
     request,
-    url_for,
 )
+from urllib.parse import parse_qs
 
 from app import flask_app, Config
 from app.forms import AddEventForm
@@ -17,34 +15,18 @@ from db import (
 @flask_app.route('/add/event', methods=['GET','POST'])
 def add_event():
     Config.MONGO[Config.DB]
-    data = request.get_data()
+    data = request.get_data(as_text=True)
     form = AddEventForm()
     # populate the choices w/ current accounts
     set_account_choices(form.credit_accounts)
     set_account_choices(form.debit_accounts)
     cur_accounts = DB_Account.objects()
     title = 'Add Event'
-    # if request.method == 'POST' and form.add_credit.data: # POST
-    #     form.credit_accounts.append_entry()
-    #     form.credit_accounts.entries[-1].account.choices = cur_accounts
-    #     return render_template('add_event.html', title=title, form=form)
-    # elif request.method == 'POST' and form.add_debit.data:
-    #     form.debit_accounts.append_entry()
-    #     form.debit_accounts.entries[-1].account.choices = cur_accounts
     if request.method == 'POST' and form.submit(): # an actual submission
-        add_event_main(form)
-        data = data.decode()        
-        data = [kv.split('=') for kv in data.split('&')]
-        data = {k:v for (k, v) in data}
-        out = {'finish': data['finish'] == 'finish'}
+        success = add_event_main(form)
+        data = parse_qs(data)
+        out = {'finish': (data['finish'] == 'finish') or (not success)}
         return jsonify(out)
-    # elif form.submit() and form.submit.data: # an actual submission
-    #     try:
-    #         event = add_event_main(form)
-    #     except:
-    #         ...
-    #     finally:
-    #        return redirect('/')
         
     return render_template('add_event.html', title=title, form=form)
 
@@ -67,11 +49,11 @@ def add_event_main(form) -> bool:
     if credit_accounts and debit_accounts:
         cred_sum = sum([acct['amount'] for acct in credit_accounts])
         deb_sum = sum([acct['amount'] for acct in debit_accounts])
-        if cred_sum != deb_sum:
-            flash('The total amount transferred should equal funds provided, '
-                 f'but you transferred {deb_sum} while supplying {cred_sum}',
-                 category='error')
-            return False
+        # if cred_sum != deb_sum:
+        #     flash('The total amount transferred should equal funds provided, '
+        #          f'but you transferred {deb_sum} while supplying {cred_sum}',
+        #          category='error')
+        #     return False
     # get our credit account objects
     acct_names = [a['account'] for a in credit_accounts]
     c_amounts = [a['amount'] for a in credit_accounts]

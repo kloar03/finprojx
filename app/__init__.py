@@ -9,14 +9,4 @@ flask_app.config.from_object(Config)
 bootstrap = Bootstrap(flask_app)
 CORS(flask_app)
 
-from app.routes import (
-    add,
-    add_account,
-    add_event,
-    data,
-    drop,
-    home,
-    schedule,
-    simulate,
-    tables,
-)
+from app import routes
