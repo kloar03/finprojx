@@ -5,27 +5,25 @@
 {% endblock %}
 
 {% block title %}
-  {% if title %}{{ title }} - FinProjX{% else %}Welcome to FinProjX{% endif %}
+  {% if title %}{{ title }} - FinProjX{% else %}FinProjX{% endif %}
 {% endblock %}
 
 {% block navbar %}
     <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false"></button>
                 <a class="navbar-brand" href="{{ url_for('home') }}">FinProjX</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('home') }}">Home</a></li>
-                    <li><a href="{{ url_for('simulate') }}">Simulate</a></li>
-                    <li><a href="{{ url_for('data') }}">Data Viewer</a></li>
-                    <li><a href="{{ url_for('add') }}">Add Data</a></li>
+                    <!-- <li id="homeTab"><a href="{# url_for('home') #}">Home</a></li> -->
+                    <li id="homeTab">Home</li>
+                    <!-- <li id="simTab"><a href="{# url_for('simulate') #}">Simulate</a></li> -->
+                    <li id="simTab">Simulate</li>
+                    <!-- <li id="dataTab"><a href="{# url_for('data') #}">Data Viewer</a></li> -->
+                    <li id="dataTab">Data Viewer</li>
+                    <!-- <li><a href="{# url_for('add') #}">Add Data</a></li> -->
                 </ul>
             </div>
         </div>
@@ -46,3 +44,5 @@
         {% block app_content %}{% endblock %}
     </div>
 {% endblock %}
+
+{%- block scripts -%}{%- endblock -%}

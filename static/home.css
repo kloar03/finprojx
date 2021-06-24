@@ -2,6 +2,36 @@
 * {
     box-sizing: border-box;
 }
+html {
+    overflow-y: scroll;
+}
+.navbar li {
+    color: #666;
+    font-size:medium;
+    border: none;
+    height: max-content;
+    background-color: #ffffff;
+    line-height: 20px;
+    position: relative;
+    padding: 15px 15px;
+    display: block;
+    margin: 1px;
+}
+.navbar li:hover {
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+li[class*=active-tab] {
+    background-color: #f9f9f9;
+    border: 1px solid;
+    border-color: #ddd;
+    height: inherit;
+    margin: 0px;
+}
+[class*=active-tab-container] {
+    display: block;
+    width: 100%; height: 100%;
+}
 .column, .event-column {
     float: left;
     width: 50%;
@@ -94,7 +124,11 @@ tr:hover [class*='-icon'] {
     visibility: visible;
     transition: visibility 1ms ease-out 0s;
 }
+tr:hover td {
+    background-color: #e8e8e8;
+}
 tr .active-icon {
     visibility: visible;
     transition: visibility 1ms ease-out 0s;
+    cursor: pointer;
 }

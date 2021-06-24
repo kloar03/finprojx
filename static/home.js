@@ -98,7 +98,7 @@ window.onclick = function(event) {
 $('#add_credit').on('click', function(e){ addEventAccounts('credit'); });
 $('#add_debit').on('click', function(e){ addEventAccounts('debit'); });
 // show edit/delete buttons on hover
-$('[id$=Table]').on('mouseenter mouseleave', 'tr [class^=-icon]', function(e){ $(this).toggleClass('active-icon'); });
+$('[id$=Table]').on('mouseenter mouseleave', 'tr [class*=-icon]', function(e){ $(this).toggleClass('active-icon'); });
 function get_helper(ename, name){
     // var group = groups[ename];
     $.get('http://localhost:5000/get/'+ename+'/'+name, function(data){
@@ -199,3 +199,22 @@ $('#verifyModal').on('submit', '#verifyForm', function(e){
 //build the logic for POSTing forms and updating tables
 for(idx=0; idx<names.length; idx++){ formLogic(modals[idx], names[idx]); } //, formTypes[idx]); }
 
+// logic for tabs
+$('#homeTab').toggleClass('active-tab')
+function changeTab(id) {
+    $('[class*=active-tab]').toggleClass('active-tab');
+    $('#'+id).toggleClass('active-tab');
+    $('.tab-container').each(function(idx, elem) {
+        var $elem = $(elem);
+        if ($elem.attr('data-source') == id) {
+            var display = "block";
+        } else {
+            var display = "none";
+        }
+        $elem.css("display", display);
+    });
+}
+changeTab('homeTab');
+$('nav').on("click", '.nav li[id$=Tab]', function(e){
+    changeTab(this.id);
+});
