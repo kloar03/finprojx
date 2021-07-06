@@ -1,0 +1,12 @@
+{% macro make_data_tab(graph_data, layout) %}
+    <h1> data viewer! </h1>
+    <body>
+        <div id="chart" class="chart"></div>
+    </body>
+
+    <script>
+        graph_data = {{ graph_data | safe }};
+        layout = {{ layout | safe }};
+        Plotly.newPlot("chart", graph_data, layout);
+    </script>
+{% endmacro %}

@@ -1,94 +1,27 @@
 {% extends 'base.html' %}
-{% import 'bootstrap/wtf.html' as wtf %}
-{% from 'macros.html' import savings_form as build_savings_form %}
-{% from 'macros.html' import loan_form as build_loan_form %}
-{% from 'macros.html' import event_form as build_event_form %}
+{% from 'home_tab.html' import make_home_tab %}
+{% from 'simulate_tab.html' import make_simulate_tab %}
+{% from 'data_tab.html' import make_data_tab %}
 
 {% block head %}
 {{ super() }}
 <link href={{ url_for('static', filename='home.css') }} rel="stylesheet">
 <script defer type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script defer type="text/javascript" src={{ url_for('static', filename='home.js') }}></script>
+<script defer type="text/javascript" src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock %}
 
 {% block app_content %}
 <!-- home -->
 <div class="tab-container active-tab-container" data-source="homeTab">
-    <h2>
-        Accounts
-    </h2>
-    <div class="row">
-        <div class="column">
-            <h3>Savings</h3>
-            <br>
-            {{ s_table | safe }}
-        </div>
-        <div class="column">
-            <h3>Loans</h3>
-            <br>
-            {{ l_table | safe }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="column">
-            <button id="savingsBtn" class="button">Add Savings Account</button>
-        </div>
-        <div class="column">
-            <button id="loanBtn" class="button">Add Loan</button>
-        </div>
-    </div>
-
-    <br style="clear:both">
-    <hr/>
-    <h2>
-        Events
-    </h2>
-    <div class="middle-column">
-        {{ e_table | safe }}
-        <button id="eventBtn" class="button">Add Event</button>
-    </div>
-
-    <div id="savingsModal" class="modal">
-        <div class="modal-content">
-            <span id="savingsClose" class="close">&times;</span>
-            <br>
-            {{ build_savings_form(savings_form, "savingsForm") }}
-        </div>
-    </div>
-
-    <div id="loanModal" class="modal">
-        <div class="modal-content">
-            <span id="loanClose" class="close">&times;</span>
-            <br>
-            {{ build_loan_form(loan_form, "loanForm") }}
-        </div>
-    </div>
-
-    <div id="eventModal" class="modal">
-        <div class="modal-content">
-            <span id="eventClose" class="close">&times;</span>
-            <br>
-            {{ build_event_form(event_form, "eventForm") }}
-        </div>
-    </div>
-
-    <div id='verifyModal' class="modal">
-        <div class="modal-content">
-            <span id="verifyClose" class="close">&times;</span>
-            <br>
-            <text>Are you sure you want to delete?</text>
-            <br>
-            <form id='verifyForm' class="form form-basic" novalidate>
-                <input name='response' type="hidden" value="n">
-                <button class="button" name="verifyBtn" type="submit" onclick="this.form.response.value='y'">Yes</button>
-                <button class="button" name="verifyBtn" type="submit">No</button>
-            </form>
-        </div>
-    </div>
+    {{ make_home_tab(s_table, l_table, e_table, savings_form, loan_form, event_form) }}
 </div>
-
 <!-- simulate -->
 <div class="tab-container" data-source="simTab">
-
+    {{ make_simulate_tab(sim_form) }}
+</div>
+<!-- data -->
+<div class="tab-container" data-source="dataTab">
+    {{ make_data_tab(graph_data, layout) }}
 </div>
 {% endblock %}

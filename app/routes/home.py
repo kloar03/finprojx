@@ -21,7 +21,8 @@ from app import flask_app, Config
 from app.forms import (
     AddSavingsForm,
     AddLoanForm,
-    AddEventForm
+    AddEventForm,
+    SimulateForm,
 )
 from app.tables import (
     EventsTable,
@@ -49,7 +50,10 @@ def home():
     loans_table = build_loans_table()
     events_table = build_events_table()
 
+    sim_form = SimulateForm()
+
     return render_template('home.html', title=title,
                            s_table=savings_table, l_table=loans_table,
                            e_table=events_table, savings_form=savings_form,
-                           loan_form=loan_form, event_form=event_form)
+                           loan_form=loan_form, event_form=event_form,
+                           sim_form=sim_form)
